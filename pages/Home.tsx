@@ -10,7 +10,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const Home: React.FC = () => {
+export default function Home() {
   const router = useRouter();
 
   const [hasMounted, setHasMounted] = useState(false);
@@ -161,6 +161,4 @@ const Home: React.FC = () => {
       </section>
     </>
   );
-};
-
-export default Home;
+}
