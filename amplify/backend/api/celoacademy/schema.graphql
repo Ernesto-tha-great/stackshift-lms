@@ -1,0 +1,17 @@
+type Submissions @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  video: String
+  text: String
+  github: String
+  users: [User] @manyToMany(relationName: "UserSubmissions")
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  email: String
+  name: String
+  country: String
+  password: String
+  address: String
+  Submissions: [Submissions] @manyToMany(relationName: "UserSubmissions")
+}

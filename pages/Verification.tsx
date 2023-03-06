@@ -10,61 +10,42 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-export default function SignUp() {
+export default function Verification() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [country, setCountry] = useState("");
-  const [password, setPassword] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const [loading, setLoading] = useState(false);
 
   const [hasMounted, setHasMounted] = useState(false);
 
   const { address, isDisconnected } = useAccount();
 
-  // const { user, setUser } = useUser();
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  // useEffect(() => {
-  //   if (user != null && user.name) {
-  //     router.push("/pathways");
-  //   }
-  // }, [router, user]);
-
-  const signup = async () => {
+  const verify = async () => {
     setLoading(true);
     try {
-      if (email === "" || name === "" || country === "") {
+      if (verificationCode === "") {
         alert("Please fill all the fields");
         return;
       }
 
       try {
-        const { user } = await Auth.signUp({
-          username: email,
-          password: password,
-          attributes: {
-            email: email,
-          },
-          autoSignIn: {
-            enabled: true,
-          },
-        });
-        console.log(user);
+        console.log("newhhh", router.query.email?.toString());
+        console.log("newhhh", verificationCode);
+        await Auth.confirmSignUp(
+          router.query.email!.toString(),
+          verificationCode
+        );
+        console.log("newhhh", "success");
         router.push({
-          pathname: "/Verification",
+          pathname: "/Login",
           query: {
-            email: email,
-            name: name,
-            country: country,
-            address: address,
+            email: router.query.email,
+            name: router.query.name,
+            country: router.query.country,
+            address: router.query.address,
           },
         });
-      } catch (error) {
-        alert(error);
+      } catch (err: any) {
+        console.log("Error: ", err);
       }
     } finally {
       setLoading(false);
@@ -102,48 +83,38 @@ export default function SignUp() {
         <div className="w-full flex mt-16 flex-row items-center ">
           <div className="w-1/2 bg-gypsum border-2 border-black px-8 rounded-xl py-16 mx-8">
             <div className="text-2xl font-noto font-semibold text-center">
-              Sign up
+              Verify your email
             </div>
             {/* <h5 className="mt-8 font-noto"></h5> */}
-            <div className="mt-3">
-              <InputField
-                value={email}
-                placeholder={"Email address"}
-                onChange={(e) => setEmail(e)}
+            <div className="mt-6">
+              <label htmlFor="verificationCode" className="sr-only">
+                Verification Code
+              </label>
+              <input
+                id="verificationCode"
+                name="verificationCode"
+                type="text"
+                autoComplete="off"
+                required
+                maxLength={6}
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Verification Code | check your mail"
               />
             </div>
-            <div className="mt-4">
-              <InputField
-                value={name}
-                placeholder={"Full name"}
-                onChange={(e) => setName(e)}
-              />
-            </div>
-            <div className="mt-4">
-              <InputField
-                value={country}
-                placeholder={"Country"}
-                onChange={(e) => setCountry(e)}
-              />
-            </div>
-            <div className="mt-4">
-              <InputField
-                value={password}
-                placeholder={"Password"}
-                onChange={(e) => setPassword(e)}
-              />
-            </div>
+
             <div className="mt-8 h-16">
               {loading ? (
                 <Loading />
               ) : (
                 <button
                   onClick={() => {
-                    signup();
+                    verify();
                   }}
                   className="w-full button-full hover:cursor-pointer"
                 >
-                  Sign up
+                  Submit
                 </button>
               )}
             </div>

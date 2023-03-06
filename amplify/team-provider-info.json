@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-celoacademy-dev-20452-authRole",
+      "UnauthRoleArn": "arn:aws:iam::434692271060:role/amplify-celoacademy-dev-20452-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::434692271060:role/amplify-celoacademy-dev-20452-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-celoacademy-dev-20452-deployment",
+      "UnauthRoleName": "amplify-celoacademy-dev-20452-unauthRole",
+      "StackName": "amplify-celoacademy-dev-20452",
+      "StackId": "arn:aws:cloudformation:us-east-1:434692271060:stack/amplify-celoacademy-dev-20452/e954e6c0-bbba-11ed-b2b2-0a0bcad48579",
+      "AmplifyAppId": "dt95ni8187q4t"
+    },
+    "categories": {
+      "auth": {
+        "celoacademy668ba738": {}
+      }
+    }
+  }
+}

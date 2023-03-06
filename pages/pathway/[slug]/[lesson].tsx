@@ -1,6 +1,7 @@
 import AddressDialog from "@/components/addressDialog";
 import Loading from "@/components/common/Loading";
 import CompletionDialog from "@/components/CompletionDialog";
+import YouTube from "@/components/CustomVideo";
 import ImageDialog from "@/components/imageDialog";
 import LessonSidebarItem from "@/components/LessonSidebarItem";
 import QuizDialog from "@/components/quizDialog";
@@ -40,12 +41,6 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   useEffect(() => {
     setHasMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (user == null || !user.name) {
-      router.push("/signup");
-    }
-  }, [router, user]);
 
   useEffect(() => {
     if (hasMounted) highlight(); // <--- call the async function

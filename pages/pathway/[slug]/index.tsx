@@ -9,6 +9,31 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+interface Props {
+  pathway: {
+    key: string;
+    name: string;
+    url: string;
+    image: StaticImageData;
+    desc: string;
+    tags: string[];
+  };
+  allLessons: {
+    slug: string;
+    title: string;
+    lesson: string;
+    readingTime: string;
+    description: string;
+    restriction: string;
+    question: string;
+    answer: string;
+    option1: string;
+    option2: string;
+    option3: string;
+    option4: string;
+  }[];
+}
+
 function Pathway({ allLessons, pathway }: Props) {
   const router = useRouter();
   const { address } = useAccount();
@@ -136,28 +161,3 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 export default Pathway;
-
-type Props = {
-  pathway: {
-    key: string;
-    name: string;
-    url: string;
-    image: StaticImageData;
-    desc: string;
-    tags: string[];
-  };
-  allLessons: {
-    slug: string;
-    title: string;
-    lesson: string;
-    readingTime: string;
-    description: string;
-    restriction: string;
-    question: string;
-    answer: string;
-    option1: string;
-    option2: string;
-    option3: string;
-    option4: string;
-  }[];
-};

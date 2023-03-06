@@ -26,6 +26,10 @@ import { UserProvider } from "@/context/userContext";
 import { components } from "@/utils/mdx";
 import { Alfajores, Celo } from "@celo/rainbowkit-celo/chains";
 import Layout from "../components/Layout";
+import { Amplify } from "aws-amplify";
+import awsConfig from "../src/aws-exports";
+
+Amplify.configure(awsConfig);
 
 const { chains, provider } = configureChains(
   [Alfajores, Celo],

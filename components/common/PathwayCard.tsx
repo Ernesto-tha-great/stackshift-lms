@@ -50,7 +50,7 @@ function PathwayCard({ data }: Props) {
           }}
           className="w-full button-full hover:cursor-pointer"
         >
-          Start the Pathway
+          Start your cohort
         </div>
       </div>
     </div>

@@ -29,15 +29,15 @@ export default function Header() {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <Link href="/" className="flex flex-shrink-0 items-center">
-                  <Image
+                  {/* <Image
                     className="block h-8 w-auto sm:block lg:block"
                     src="/logo.svg"
                     width="24"
                     height="24"
                     alt="Celo Logo"
-                  />
+                  /> */}
                   <span className="text-4xl font-semibold text-black ml-3 font-noto">
-                    Academy
+                    StackShift
                   </span>
                 </Link>
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
