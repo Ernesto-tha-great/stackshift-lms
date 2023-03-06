@@ -10,7 +10,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export default function Home() {
+const Home: React.FC = () => {
   const router = useRouter();
 
   const [hasMounted, setHasMounted] = useState(false);
@@ -116,8 +116,8 @@ export default function Home() {
               autoPlaySpeed={1000}
               responsive={responsive}
             >
-              {infoCardData.map((data) => (
-                <InfoCard key={data.key} data={data} />
+              {infoCardData.map((c) => (
+                <InfoCard key={c.key} data={c} />
               ))}
             </Carousel>
             ;
@@ -161,4 +161,6 @@ export default function Home() {
       </section>
     </>
   );
-}
+};
+
+export default Home;

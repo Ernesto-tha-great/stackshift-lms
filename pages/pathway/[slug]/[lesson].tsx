@@ -114,15 +114,16 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
       setPathwayFBData(res);
       setFetching(false);
     };
-    pathwayApiCall();
-  }, [address, currentLesson, slug]);
 
-  const getCompletedLessonPercentage = (data: any) => {
-    const totalLessons = allLessons.length;
-    const lastCompletedLesson = Number(data.lastCompletedLesson) + 1;
-    const percentage = (lastCompletedLesson / totalLessons) * 100;
-    setCompletedPercentage(Math.round(percentage));
-  };
+    const getCompletedLessonPercentage = (data: any) => {
+      const totalLessons = allLessons.length;
+      const lastCompletedLesson = Number(data.lastCompletedLesson) + 1;
+      const percentage = (lastCompletedLesson / totalLessons) * 100;
+      setCompletedPercentage(Math.round(percentage));
+    };
+
+    pathwayApiCall();
+  }, [address, allLessons.length, currentLesson, slug]);
 
   if (fetching) {
     return <Loading />;
