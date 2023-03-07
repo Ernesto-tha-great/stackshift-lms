@@ -1,15 +1,10 @@
-import { useUser } from "@/context/userContext";
+// import { useUser } from "@/context/userContext";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 export default function Header() {
-  const router = useRouter();
-  const { user } = useUser();
-
   return (
     <Disclosure as="nav" className="bg-light">
       {({ open }) => (
@@ -28,7 +23,7 @@ export default function Header() {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <Link href="/" className="flex flex-shrink-0 items-center">
+                <Link href="/Home" className="flex flex-shrink-0 items-center">
                   {/* <Image
                     className="block h-8 w-auto sm:block lg:block"
                     src="/logo.svg"
@@ -53,7 +48,7 @@ export default function Header() {
                 <ConnectButton
                   showBalance={{ smallScreen: true, largeScreen: false }}
                 />
-                {(!user || !user.name) && (
+                {/* {(!user || !user.name) && (
                   <div className="w-32 ml-3">
                     <button
                       onClick={(e) => {
@@ -65,7 +60,7 @@ export default function Header() {
                       Sign Up
                     </button>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>

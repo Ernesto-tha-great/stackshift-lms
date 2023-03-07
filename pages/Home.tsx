@@ -113,7 +113,7 @@ export default function Home() {
               draggable={false}
               showDots={true}
               autoPlay={true}
-              autoPlaySpeed={1000}
+              autoPlaySpeed={1500}
               responsive={responsive}
             >
               {infoCardData.map((c) => (

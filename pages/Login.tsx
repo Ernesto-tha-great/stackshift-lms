@@ -42,15 +42,7 @@ export default function Login() {
         );
         router.push("/Home");
       } catch (err: any) {
-        if (err.code === "UserNotConfirmedException") {
-          router.push("/Signup");
-        } else if (err.code === "NotAuthorizedException") {
-          router.push("/Signup");
-        } else if (err.code === "UserNotFoundException") {
-          router.push("/Signup");
-        } else {
-          console.log(err);
-        }
+        alert(err);
       }
     } finally {
       setLoading(false);

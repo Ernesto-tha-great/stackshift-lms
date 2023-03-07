@@ -33,9 +33,6 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   const slug = router.query.slug as string;
   const [pathwayFBData, setPathwayFBData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [completedPercentage, setCompletedPercentage] = useState(0);
-  const [fetching, setFetching] = useState(true);
-  const { user } = useUser();
 
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
@@ -96,39 +93,6 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
     }
   };
 
-  useEffect(() => {
-    const pathwayApiCall = async () => {
-      var res = await fetch("/api/pathway", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          address: address,
-          pathway: slug,
-          lesson: currentLesson,
-        }),
-      });
-      res = await res.json();
-      getCompletedLessonPercentage(res);
-      setPathwayFBData(res);
-      setFetching(false);
-    };
-
-    const getCompletedLessonPercentage = (data: any) => {
-      const totalLessons = allLessons.length;
-      const lastCompletedLesson = Number(data.lastCompletedLesson) + 1;
-      const percentage = (lastCompletedLesson / totalLessons) * 100;
-      setCompletedPercentage(Math.round(percentage));
-    };
-
-    pathwayApiCall();
-  }, [address, allLessons.length, currentLesson, slug]);
-
-  if (fetching) {
-    return <Loading />;
-  }
-
   return (
     <>
       <Head>
@@ -151,17 +115,17 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
           </div>
           <div className="relative">
             <div className="flex flex-col items-center">
-              <div className="font-noto font-semibold">
+              {/* <div className="font-noto font-semibold">
                 {completedPercentage}% Completed
-              </div>
-              <ReactCustomizableProgressbar
+              </div> */}
+              {/* <ReactCustomizableProgressbar
                 radius={50}
                 progress={completedPercentage}
                 strokeWidth={4}
                 trackStrokeWidth={4}
                 pointerRadius={8}
                 pointerStrokeWidth={8}
-              />
+              /> */}
             </div>
           </div>
         </div>
