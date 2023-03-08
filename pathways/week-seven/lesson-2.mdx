@@ -17,3 +17,222 @@ publishedAt: "2023-02-01"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
   allowfullscreen
 ></iframe>
+
+&nbsp;
+
+Congrats on reaching this section! You've learned about smart contracts, UI with Nextjs and Tailwind, testing, and contract verification in the past two tutorials.
+In this lesson, we will provide step-by-step instructions for setting up a subgraph that queries subscription
+details from the OpenZeplin Defender autotask script. This will help you better understand the process.
+
+### Prerequisites
+
+- [Create](https://thegraph.com/en/) an account on the subgraph
+- Click on sign in with GitHub
+- Install the graph globally on your local machine using npm. In your terminal run
+
+In the project folder run:
+
+```bash
+yarn subgraphs:get-abi
+```
+
+### Step 1
+
+To initialize the graph in our project, cd into the subgraph package folder and run
+
+```bash
+graph init
+```
+
+Choose Ethereum for protocol, and hosted services, and add your GitHub username as your subgraph name.
+
+Add celo-alfajores as the network, and you should see the output below if executed successfully.
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678226888850/597e9418-9fdf-423a-8650-79fd248ada45.png)
+
+In our subgraph, a new folder called `ebook-payment-subscription-platform` has been created or in your own case
+whatever you named your folder name, Inside the folder, open the `schema.graphql` file and paste the following
+code inside.
+
+```graphql
+type Plan @entity(immutable: true) {
+  id: Bytes!
+  plan: Int!
+  price: BigInt!
+  duration: BigInt!
+  subscriptions: [SubscriptionP!]! @derivedFrom(field: "plan")
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SubscriptionP @entity(immutable: true) {
+  id: Bytes!
+  subscriber: Bytes! # address
+  plan: Plan!
+  nextCharge: BigInt!
+  endDate: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+```
+
+Then in your subgraph.yaml file delete the default code and paste the following code
+
+```yaml
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: PaymentSubscription
+    network: celo-alfajores
+    source:
+      address: "0x95BD5b1B16C586025bF0750c21bd1de433de8D4c"
+      abi: PaymentSubscription
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Plan
+        - SubscriptionP
+      abis:
+        - name: PaymentSubscription
+          file: ./abis/PaymentSubscription.json
+      eventHandlers:
+        - event: PlanCreated(uint8,uint256,uint256)
+          handler: handlePlanCreated
+        - event: SubscriptionCancelled(indexed address)
+          handler: handleSubscriptionCancelled
+        - event: SubscriptionCharged(indexed address,uint8,uint256)
+          handler: handleSubscriptionCharged
+        - event: SubscriptionCreated(indexed address,uint8)
+          handler: handleSubscriptionCreated
+      file: ./src/payment-subscription.ts
+```
+
+In your terminal run
+
+```bash
+graph codegen
+```
+
+You should see the following output
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678273533383/249cd13c-c2e4-4f9b-a134-ce23fb6e8baf.png)
+
+Lets proceed to doing dome cleanups in our file , navigate to the src folder and open `paymentsubscription.ts`
+file, delete the default code and paste the following
+
+```typescript
+import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import {
+  PlanCreated as PlanCreatedEvent,
+  SubscriptionCancelled as SubscriptionCancelledEvent,
+  SubscriptionCharged as SubscriptionChargedEvent,
+  SubscriptionCreated as SubscriptionCreatedEvent,
+  PaymentSubscription as PaymentSubscriptionContract,
+  PaymentSubscription__subscriptionsResult,
+} from "../generated/PaymentSubscription/PaymentSubscription";
+import { Plan, SubscriptionP as Subscription } from "../generated/schema";
+
+export function handlePlanCreated(event: PlanCreatedEvent): void {
+  let entity = new Plan(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  );
+
+  entity.plan = event.params.plan;
+  entity.price = event.params.price;
+  entity.duration = event.params.duration;
+
+  entity.blockNumber = event.block.number;
+  entity.blockTimestamp = event.block.timestamp;
+  entity.transactionHash = event.transaction.hash;
+
+  entity.save();
+}
+
+export function handleSubscriptionCancelled(
+  event: SubscriptionCancelledEvent
+): void {
+  let entity = Subscription.load(event.params.subscriber);
+
+  if (entity == null) {
+    return;
+  }
+
+  entity.nextCharge = BigInt.fromI32(0);
+  entity.endDate = BigInt.fromI32(0);
+
+  entity.save();
+}
+
+export function handleSubscriptionCharged(
+  event: SubscriptionChargedEvent
+): void {
+  let entity = Subscription.load(event.params.subscriber);
+
+  if (entity == null) {
+    entity = new Subscription(event.params.subscriber);
+
+    let paymentSubscriptionContract = PaymentSubscriptionContract.bind(
+      event.address
+    );
+    let subscription = paymentSubscriptionContract.subscriptions(
+      event.params.subscriber
+    );
+
+    entity.plan = Bytes.fromI32(subscription.getPlan());
+    entity.subscriber = event.params.subscriber;
+    entity.endDate = subscription.getEndDate();
+  }
+
+  entity.nextCharge = event.params.nextCharge;
+
+  entity.blockNumber = event.block.number;
+  entity.blockTimestamp = event.block.timestamp;
+  entity.transactionHash = event.transaction.hash;
+
+  entity.save();
+}
+
+export function handleSubscriptionCreated(
+  event: SubscriptionCreatedEvent
+): void {
+  let entity = new Subscription(event.params.subscriber);
+
+  entity.subscriber = event.params.subscriber;
+
+  let paymentSubscriptionContract = PaymentSubscriptionContract.bind(
+    event.address
+  );
+  let subscription = paymentSubscriptionContract.subscriptions(
+    event.params.subscriber
+  );
+
+  entity.plan = Bytes.fromI32(subscription.getPlan());
+  entity.endDate = subscription.getEndDate();
+  entity.nextCharge = subscription.getNextCharge();
+
+  entity.blockNumber = event.block.number;
+  entity.blockTimestamp = event.block.timestamp;
+  entity.transactionHash = event.transaction.hash;
+
+  entity.save();
+}
+```
+
+### Step 2
+
+The next action is to upload our subgraph, Head over to your dashboard and create a subgraph.
+
+in your terminal run
+
+```bash
+graph auth --product hosted-service<the number generated for you>
+graph deploy --product hosted-service<yourname-subgraphname>
+```
+
+You have successfully setup subgraph to query subscription details from openzepplin defender
