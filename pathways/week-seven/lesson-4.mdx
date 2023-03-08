@@ -1,0 +1,680 @@
+---
+title: SubGraphs
+description: Building a payment subscription dapp on Celo.
+lesson: "4"
+restriction: "YesDialog"
+publishedAt: "2023-02-01"
+---
+
+## Introduction
+
+<iframe
+  width="850"
+  height="400"
+  src="https://www.youtube.com/embed/PEg1nRugl6E"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
+
+&nbsp;
+
+This comprehensive tutorial will guide you through setting up a crypto payment subscription platform on Celo.
+By the end of this tutorial, you will have a working subscription platform and the knowledge to customize and
+expand it for your unique needs. This tutorial will be broken up into four parts; you must follow them in order
+as they build upon one another.
+
+## Prerequisites
+
+To start building, you’ll need a basic understanding of web development, Node (v12), yarn, and Git.
+
+- Your computer has Node.js installed. If not download from [here](https://nodejs.org/en/download/)
+- Familiar with React/Nextjs
+
+## Requirements
+
+For our project, we would be needing the following tools and framework
+
+- Celo Composer React App - for UI
+- Subgraph Packages - to index the data on the blockchain such that it's possible to query people's payments.
+- OpenZeppelin Defender Admin
+- Auto Task and Relayer
+
+## Getting Started
+
+To get started, we need to create our payment subscription Contract and UI with nextjs and tailwind CSS.
+
+Install the celo composer to set up out development environment and create a new celo composer. On your terminal
+run these two commands;
+
+```bash
+npm i @celo/celocomposer -g
+```
+
+```bash
+npx celo-composer-create
+```
+
+#### this will prompt you to select the framework and the template you want to use
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677598536278/ae85c391-2e8a-455c-ad26-13dbea2d3753.png)
+
+#### After choosing the framework and the template, you'll be prompted to choose the smart contract development
+
+environment tool, decide whether or not to enable subgraph support, and give the project a name. Your terminal
+should seem like this at the end.
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677598808749/e840f3a2-9ec5-4d10-afed-9035b60c9536.png)
+
+Open up your folder on your VS Code and run
+
+```bash
+yarn install
+```
+
+to install the dependencies, and
+
+```bash
+yarn  dev
+```
+
+in your terminal to start our local environment. your web interface should look like this.
+
+#screenshot.
+
+Next, we need to create the cards as seen on the Create a new file called **_PaymentCard.js_** in your component folder and add the following code inside
+
+```javascript
+import React from "react";
+
+export default function PaymentCard({ planName, price }) {
+  return (
+    <div className="flex flex-col max-w-lg p-6 mx-auto text-center text-gray-900 bg-white border border-gray-100 rounded-lg shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
+      <h3 className="mb-4 text-2xl font-semibold">{planName}</h3>
+      <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
+        Best option for personal use &amp; for your next project.
+      </p>
+      <div className="flex items-baseline justify-center my-8">
+        <span className="mr-2 text-3xl font-extrabold">{price} cUSD</span>
+        <span className="text-gray-500 dark:text-gray-400">/month</span>
+      </div>
+
+      <ul role="list" className="mb-8 space-y-4 text-left">
+        <li className="flex items-center space-x-3">
+          <svg
+            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span>Individual configuration</span>
+        </li>
+        <li className="flex items-center space-x-3">
+          <svg
+            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span>No setup, or hidden fees</span>
+        </li>
+        <li className="flex items-center space-x-3">
+          <svg
+            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span>
+            Team size: <span className="font-semibold">1 developer</span>
+          </span>
+        </li>
+        <li className="flex items-center space-x-3">
+          <svg
+            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span>
+            Premium support: <span className="font-semibold">6 months</span>
+          </span>
+        </li>
+        <li className="flex items-center space-x-3">
+          <svg
+            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span>
+            Free updates: <span className="font-semibold">6 months</span>
+          </span>
+        </li>
+      </ul>
+      <a
+        href="#"
+        className="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white  dark:focus:ring-purple-900"
+      >
+        Get started
+      </a>
+    </div>
+  );
+}
+```
+
+In your index.tx file , import your payment card, your final code should look like this.
+
+```javascript
+import React, { useEffect, useState } from "react";
+import PaymentCard from "../components/PaymentCard";
+
+export default function Home() {
+  return (
+    <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
+      <div className="flex">
+        <PaymentCard planName={"Basic"} price={2} />
+      </div>
+      <div className="flex">
+        <PaymentCard planName={"Premium"} price={5} />
+      </div>
+      <div className="flex">
+        <PaymentCard planName={"Enterprise"} price={12} />
+      </div>
+    </div>
+  );
+}
+```
+
+Result below. However you can choose to add more cards to your own project and play around the styling, but for
+this tutorial we are just going to stick to three different payment plan
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677640148664/77bcbf3e-3a6e-4ea3-b559-971243e3bf9c.png)
+
+After this, click on your connect wallet button to see if it works, once it works its meant to show a disconnect
+button. However we also need to display the network its been connected to and the address of the wallet. So in
+your **_Header.tsx file,_** duplicate the button tag and add two more buttons to the header. Your final code
+should look like this
+
+```javascript
+import { Disclosure } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useCelo } from "@celo/react-celo";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+export default function Header() {
+  let [componentInitialized, setComponentInitialized] = useState(false);
+  let { initialised, address, network, connect, disconnect } = useCelo();
+
+  useEffect(() => {
+    if (initialised) {
+      setComponentInitialized(true);
+    }
+  }, [initialised]);
+
+  return (
+    <Disclosure as="nav" className="bg-prosperity border-b border-black">
+      {({ open }) => (
+        <>
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="relative flex h-16 justify-between">
+              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                {/* Mobile menu button */}
+                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-1 focus:ring-inset focus:rounded-none focus:ring-black">
+                  <span className="sr-only">Open main menu</span>
+                  {open ? (
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                  )}
+                </Disclosure.Button>
+              </div>
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div className="flex flex-shrink-0 items-center">
+                  <Image
+                    className="block h-8 w-auto lg:block"
+                    src="/logo.svg"
+                    width="24"
+                    height="24"
+                    alt="Celo Logo"
+                  />
+                </div>
+                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                  <a
+                    href="#"
+                    className="inline-flex items-center border-b-2 border-black px-1 pt-1 text-sm font-medium text-gray-900"
+                  >
+                    Home
+                  </a>
+                </div>
+              </div>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                {componentInitialized && address ? (
+                  <>
+                    <button
+                      type="button"
+                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
+                    >
+                      {network.name}
+                    </button>
+                    <button
+                      type="button"
+                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
+                    >
+                      {truncateAddress(address)}
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
+                      onClick={disconnect}
+                    >
+                      Disconnect
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className="inline-flex content-center place-items-center rounded-full border border-wood bg-forest py-2 px-5 text-md font-medium text-snow hover:bg-black"
+                    onClick={() =>
+                      connect().catch((e) => console.log((e as Error).message))
+                    }
+                  >
+                    Connect
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <Disclosure.Panel className="sm:hidden">
+            <div className="space-y-1 pt-2 pb-4">
+              <Disclosure.Button
+                as="a"
+                href="#"
+                className="block border-l-4 border-black py-2 pl-3 pr-4 text-base font-medium text-black"
+              >
+                Home
+              </Disclosure.Button>
+              {/* Add here your custom menu elements */}
+            </div>
+          </Disclosure.Panel>
+        </>
+      )}
+    </Disclosure>
+  );
+}
+```
+
+Your output should look like this..you can see the Alfajores network and your wallet address after connecting
+your wallet.
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677700379085/64c4e595-033b-4b95-bd01-403a25e6fe34.png)
+
+However, the address button is way to long and doesn't look nice, we can make this better by truncating the
+address. The tuncate method is a method ...... read more here. Add the following code below your imports and
+also call the truncate
+
+```javascript
+const truncateAddress = (address: string) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+```
+
+Your final code should look like this
+
+```javascript
+import { Disclosure } from "@headlessui/react";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useCelo } from "@celo/react-celo";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+const truncateAddress = (address: string) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+export default function Header() {
+  let [componentInitialized, setComponentInitialized] = useState(false);
+  let { initialised, address, network, connect, disconnect } = useCelo();
+
+  useEffect(() => {
+    if (initialised) {
+      setComponentInitialized(true);
+    }
+  }, [initialised]);
+
+  return (
+    <Disclosure as="nav" className="bg-prosperity border-b border-black">
+      {({ open }) => (
+        <>
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="relative flex h-16 justify-between">
+              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                {/* Mobile menu button */}
+                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-1 focus:ring-inset focus:rounded-none focus:ring-black">
+                  <span className="sr-only">Open main menu</span>
+                  {open ? (
+                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                  ) : (
+                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                  )}
+                </Disclosure.Button>
+              </div>
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div className="flex flex-shrink-0 items-center">
+                  <Image
+                    className="block h-8 w-auto lg:block"
+                    src="/logo.svg"
+                    width="24"
+                    height="24"
+                    alt="Celo Logo"
+                  />
+                </div>
+                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                  <a
+                    href="#"
+                    className="inline-flex items-center border-b-2 border-black px-1 pt-1 text-sm font-medium text-gray-900"
+                  >
+                    Home
+                  </a>
+                </div>
+              </div>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                {componentInitialized && address ? (
+                  <>
+                    <button
+                      type="button"
+                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
+                    >
+                      {network.name}
+                    </button>
+                    <button
+                      type="button"
+                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
+                    >
+                      {truncateAddress(address)}
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
+                      onClick={disconnect}
+                    >
+                      Disconnect
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className="inline-flex content-center place-items-center rounded-full border border-wood bg-forest py-2 px-5 text-md font-medium text-snow hover:bg-black"
+                    onClick={() =>
+                      connect().catch((e) => console.log((e as Error).message))
+                    }
+                  >
+                    Connect
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <Disclosure.Panel className="sm:hidden">
+            <div className="space-y-1 pt-2 pb-4">
+              <Disclosure.Button
+                as="a"
+                href="#"
+                className="block border-l-4 border-black py-2 pl-3 pr-4 text-base font-medium text-black"
+              >
+                Home
+              </Disclosure.Button>
+              {/* Add here your custom menu elements */}
+            </div>
+          </Disclosure.Panel>
+        </>
+      )}
+    </Disclosure>
+  );
+}
+```
+
+After this we would be writing our smart contract that interacts with our subscription, so head over to your
+terminal and run this command
+
+```bash
+yarn run hardhat:accounts
+```
+
+to view the account that is set up. You should get an error message stating you do not have any account setup,
+therefore we need a deployer wallet. To do this rename the file **_env.example to_.env** and add a test private
+key that has already been given by celo [here](https://celo-composer-community-docs.vercel.app/docs/frameworks/react-app/installation-and-setup)
+and copy the private key already given to us .
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677728444433/2940d0a2-d6cf-412c-ad21-5814e087115d.png align="center")
+
+After this, re-run the above command and you should see an address in your terminal. Verify if the account as
+some celo in it via [celoscan](https://celoscan.io/) and if it doesn't you can request for a test token via
+[celo faucet](https://faucet.celo.org/). Head over to
+[open zepplin contracts](https://www.openzeppelin.com/contracts) and make use of the wizard shown below and
+copy the code generated into a new file created in the contract folder called **_MockCUSD.sol file_**
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677729295502/cc133e24-48ea-402c-bced-7533fa27d873.png align="center")
+
+Let's install some OpenZeppelin contracts so we can get access to the ERC-721 contracts. In your terminal,
+execute the following command:
+
+```bash
+cd..
+cd hardhat
+yarn add @openzeppelin/contracts
+```
+
+- In the contracts folder, create a new Solidity file called **_PaymentSubscription.sol_**
+
+Now we would write some code in the **_PaymentSubscription.sol_**. We would be importing [Openzeppelin's ERC721 Contract](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol).
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
+
+contract PaymentSubscription is Pausable, Ownable {
+    //Available plans
+    enum Plan {
+        Basic,
+        Premium,
+        Enterprise
+    }
+
+    struct Subscription {
+        Plan plan;
+        uint256 price;
+        uint256 startDate;
+        uint256 endDate;
+        uint256 nextCharge;
+        bool active;
+    }
+
+    struct PlanDetail {
+        Plan plan;
+        uint256 price;
+        uint256 duration;
+    }
+
+    //All plans
+    mapping(Plan => PlanDetail) public plans;
+
+    //All subscriptions
+    mapping(address => Subscription) public subscriptions;
+
+    //Active subscriptions
+    mapping(address => bool) public activeSubscriptions;
+
+    //Emits when a new plan is created
+    event PlanCreated(Plan plan, uint256 price, uint256 duration);
+
+    event SubscriptionCreated(address indexed subscriber, Plan plan);
+    event SubscriptionCancelled(address indexed subscriber);
+    event SubscriptionCharged(
+        address indexed subscriber,
+        Plan plan,
+        uint256 nextCharge
+    );
+
+    //Token used for subscription payments
+    address public subscriptionToken;
+
+    constructor(address _subscriptionToken) {
+        require(_subscriptionToken != address(0), "Invalid token address");
+        subscriptionToken = _subscriptionToken;
+        plans[Plan.Basic] = PlanDetail(Plan.Basic, 2e18, 1 hours);
+        plans[Plan.Premium] = PlanDetail(Plan.Premium, 5e18, 1 hours);
+        plans[Plan.Enterprise] = PlanDetail(Plan.Enterprise, 12e18, 1 hours);
+
+        emit PlanCreated(Plan.Basic, 2e18, 1 hours);
+        emit PlanCreated(Plan.Premium, 5e18, 1 hours);
+        emit PlanCreated(Plan.Enterprise, 12e18, 1 hours);
+    }
+
+    function subscribe(Plan _plan, uint8 duration) public whenNotPaused {
+        require(uint8(_plan) <= 2, "Invalid plan");
+        require(duration > 0, "Invalid duration");
+        require(duration <= 12, "Invalid duration");
+        require(!activeSubscriptions[msg.sender], "Already subscribed");
+
+        uint256 requiredAllowance = plans[_plan].price * duration;
+
+        //Check if the user has approved the contract to spend the required amount, if not revert
+        require(
+            IERC20(subscriptionToken).allowance(msg.sender, address(this)) >=
+                requiredAllowance,
+            "Insufficient allowance"
+        );
+
+        //Check that we can charge for the first month
+        require(
+            IERC20(subscriptionToken).balanceOf(msg.sender) >=
+                plans[_plan].price,
+            "Insufficient balance"
+        );
+
+        subscriptions[msg.sender] = Subscription({
+            plan: _plan,
+            price: plans[_plan].price,
+            startDate: block.timestamp,
+            nextCharge: block.timestamp + plans[_plan].duration,
+            endDate: block.timestamp + plans[_plan].duration * duration,
+            active: true
+        });
+
+        _charge(msg.sender);
+
+        activeSubscriptions[msg.sender] = true;
+
+        emit SubscriptionCreated(msg.sender, _plan);
+    }
+
+    function _charge(address susbcriber) internal {
+        require(
+            IERC20(subscriptionToken).transferFrom(
+                susbcriber,
+                address(this),
+                subscriptions[susbcriber].price
+            ),
+            "Transfer failed"
+        );
+
+        //Set the next charge date
+        subscriptions[susbcriber].nextCharge =
+            block.timestamp +
+            plans[subscriptions[susbcriber].plan].duration;
+
+        if (
+            subscriptions[susbcriber].nextCharge >
+            subscriptions[susbcriber].endDate
+        ) {
+            _cancel(susbcriber);
+        }
+
+        emit SubscriptionCharged(
+            susbcriber,
+            subscriptions[susbcriber].plan,
+            subscriptions[susbcriber].nextCharge
+        );
+    }
+
+    function _cancel(address subscriber) internal {
+        activeSubscriptions[subscriber] = false;
+        delete subscriptions[subscriber];
+
+        emit SubscriptionCancelled(subscriber);
+    }
+
+    function charge(address subscriber) public onlyOwner whenNotPaused {
+        require(activeSubscriptions[subscriber], "Not subscribed");
+        require(
+            subscriptions[subscriber].nextCharge <= block.timestamp,
+            "Not time to charge yet"
+        );
+
+        require(
+            IERC20(subscriptionToken).allowance(subscriber, address(this)) >=
+                subscriptions[subscriber].price,
+            "Insufficient allowance"
+        );
+        _charge(subscriber);
+    }
+
+    function withdrawSubscriptionToken(
+        address to,
+        uint256 amount
+    ) public onlyOwner {
+        require(
+            IERC20(subscriptionToken).transfer(to, amount),
+            "Transfer failed"
+        );
+    }
+}
+```
+
+Compile the contract, open up a terminal and execute these commands
+
+```bash
+npx hardhat compile
+```
+
+If there are no errors, you are good to go 😚
+
+Finally we have successfully completed our payment subscription UI and the contract and the next step is to
+write test for our smart contract which would be done in the next tutorial.

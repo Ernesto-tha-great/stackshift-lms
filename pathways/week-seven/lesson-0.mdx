@@ -1,6 +1,6 @@
 ---
-title: SubGraphs
-description: Building a payment subscription dapp on Celo.
+title: Create subgraphs for Celo smart contracts
+description: Learn how to integrate The Graph with CELO.
 lesson: "0"
 restriction: "YesDialog"
 publishedAt: "2023-02-01"
@@ -11,670 +11,513 @@ publishedAt: "2023-02-01"
 <iframe
   width="850"
   height="400"
-  src="https://www.youtube.com/embed/PEg1nRugl6E"
+  src="https://www.youtube.com/embed/OgIiySTRGQE"
   title="YouTube video player"
   frameborder="0"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
   allowfullscreen
 ></iframe>
 
-&nbsp;
+### What is the Graph Protocol?
 
-This comprehensive tutorial will guide you through setting up a crypto payment subscription platform on Celo.
-By the end of this tutorial, you will have a working subscription platform and the knowledge to customize and
-expand it for your unique needs. This tutorial will be broken up into four parts; you must follow them in order
-as they build upon one another.
+The Graph protocol lets you create GraphQL APIs called subgraphs for your smart contracts. Sounds like a lot?
+We'll break it down.
 
-## Prerequisites
+### What is GraphQL?
 
-To start building, you’ll need a basic understanding of web development, Node (v12), yarn, and Git.
+GraphQL is a query language for web APIs. Instead of having multiple dumb endpoints, we can have a smart GraphQL
+endpoint which:
 
-- Your computer has Node.js installed. If not download from [here](https://nodejs.org/en/download/)
-- Familiar with React/Nextjs
+- Lets you view the API schema. Schemas are auto-generated, so say goodbye to writing swagger files!
+- Lets you fetch exactly what you want in a single query.
 
-## Requirements
+<iframe
+  width="850"
+  height="400"
+  src="https://www.youtube.com/embed/eIQh02xuVw4"
+  title="YouTube video player"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
 
-For our project, we would be needing the following tools and framework
+### I'm able to read my contract data. Why use another protocol?
 
-- Celo Composer React App - for UI
-- Subgraph Packages - to index the data on the blockchain such that it's possible to query people's payments.
-- OpenZeppelin Defender Admin
-- Auto Task and Relayer
+Querying a blockchain directly needs additional setup. For this you need access to a Celo node, plus a frontend
+library like web3.js.
 
-## Getting Started
+In contrast, you can directly query GraphQL from your app or command line.
 
-To get started, we need to create our payment subscription Contract and UI with nextjs and tailwind CSS.
+### How does it work?
 
-Install the celo composer to set up out development environment and create a new celo composer. On your terminal
-run these two commands;
+- Blockchains store a permanent history of transactions. Graph protocol indexes the transactions for our contract,
+  similar to how Google indexes the internet. We can query these transactions through a GraphQL schema.
+
+- Smart contracts let us define and trigger events. For example, when we transfer ERC20 tokens to someone, a
+  transfer event is triggered. Graph protocol listens to these events in real time and updates it's data. This
+  way, we always get the latest data.
+
+- The Graph protocol is decentralized. We don't need to worry about API server going down.
+
+### Show me the code!
+
+#### Resources:
+
+- [Source code](https://github.com/secretshardul/the-graph-celo)
+- [Deployed subgraph](https://github.com/secretshardul/the-graph-celo)
+- [Deployed Celo contract](https://github.com/secretshardul/the-graph-celo)
+
+We will create a subgraph for a gravatar contract deployed on the Celo mainnet. This is a fork of the official
+Graph tutorial with modifications made for Celo.
+
+- Visit the Graph Protocol website and sign in with Github.
+- Go to your dashboard and click on Add Subgraph. Fill in the required details and click on Create subgraph.
+
+![](https://github.com/figment-networks/learn-tutorials/raw/master/assets/celo-subgraph-01-dashboard-create-new.png)
+
+- Follow the steps shown on the dashboard with a small variation.
+
+![](https://github.com/figment-networks/learn-tutorials/raw/master/assets/celo-subgraph-02-dashboard-instructions.png)
+
+- Install Graph CLI using NPM or Yarn.
 
 ```bash
-npm i @celo/celocomposer -g
+    npm install -g @graphprotocol/graph-cli
 ```
+
+OR
 
 ```bash
-npx celo-composer-create
+   yarn global add @graphprotocol/graph-cli
 ```
 
-#### this will prompt you to select the framework and the template you want to use
-
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677598536278/ae85c391-2e8a-455c-ad26-13dbea2d3753.png)
-
-#### After choosing the framework and the template, you'll be prompted to choose the smart contract development
-
-environment tool, decide whether or not to enable subgraph support, and give the project a name. Your terminal
-should seem like this at the end.
-
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677598808749/e840f3a2-9ec5-4d10-afed-9035b60c9536.png)
-
-Open up your folder on your VS Code and run
+- Initialize the Celo starter project. We have diverged from the instructions because we're building on Celo.
 
 ```bash
-yarn install
+  git clone https://github.com/secretshardul/the-graph-celo.git
 ```
 
-to install the dependencies, and
+Install node dependencies using
 
 ```bash
-yarn  dev
+  yarn
 ```
 
-in your terminal to start our local environment. your web interface should look like this.
+OR
 
-#screenshot.
+```bash
+  npm install
+```
 
-Next, we need to create the cards as seen on the Create a new file called **_PaymentCard.js_** in your component folder and add the following code inside
+- Deploying
 
-```javascript
-import React from "react";
+```graphql
+  ✔ Apply migrations
+✔ Load subgraph from subgraph.yaml
+Compile data source: Gravity => build/Gravity/Gravity.wasm
+✔ Compile subgraph
+Copy schema file build/schema.graphql
+Write subgraph file build/Gravity/abis/Gravity.json
+Write subgraph manifest build/subgraph.yaml
+✔ Write compiled subgraph to build/
+Add file to IPFS build/schema.graphql
+                .. QmbSFRGGvHM7Cn8YSjDL41diDMxN4LQUDEMqaa5VVc5sC4
+Add file to IPFS build/Gravity/abis/Gravity.json
+                .. QmajZTadknSpgsCWRz9fG6bXFHdpVXPMWpx9yMipz3VtMQ
+Add file to IPFS build/Gravity/Gravity.wasm
+                .. QmbK8bwncci52cstF3P8Q8i4oGjrMt1pUqdv5Uf1VXqXdb
+✔ Upload subgraph to IPFS
 
-export default function PaymentCard({ planName, price }) {
-  return (
-    <div className="flex flex-col max-w-lg p-6 mx-auto text-center text-gray-900 bg-white border border-gray-100 rounded-lg shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
-      <h3 className="mb-4 text-2xl font-semibold">{planName}</h3>
-      <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
-        Best option for personal use &amp; for your next project.
-      </p>
-      <div className="flex items-baseline justify-center my-8">
-        <span className="mr-2 text-3xl font-extrabold">{price} cUSD</span>
-        <span className="text-gray-500 dark:text-gray-400">/month</span>
-      </div>
+Build completed: QmXWN5HVtKsRdCKc7HUthjvuyPiwkCNeYJQknsAa5AqQ8K
 
-      <ul role="list" className="mb-8 space-y-4 text-left">
-        <li className="flex items-center space-x-3">
-          <svg
-            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span>Individual configuration</span>
-        </li>
-        <li className="flex items-center space-x-3">
-          <svg
-            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span>No setup, or hidden fees</span>
-        </li>
-        <li className="flex items-center space-x-3">
-          <svg
-            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span>
-            Team size: <span className="font-semibold">1 developer</span>
-          </span>
-        </li>
-        <li className="flex items-center space-x-3">
-          <svg
-            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span>
-            Premium support: <span className="font-semibold">6 months</span>
-          </span>
-        </li>
-        <li className="flex items-center space-x-3">
-          <svg
-            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span>
-            Free updates: <span className="font-semibold">6 months</span>
-          </span>
-        </li>
-      </ul>
-      <a
-        href="#"
-        className="text-white bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white  dark:focus:ring-purple-900"
-      >
-        Get started
-      </a>
-    </div>
-  );
+Deployed to https://thegraph.com/explorer/subgraph/secretshardul/celo-subgraph-tutorial
+
+Subgraph endpoints:
+Queries (HTTP):     https://api.thegraph.com/subgraphs/name/secretshardul/celo-subgraph-tutorial
+Subscriptions (WS): wss://api.thegraph.com/subgraphs/name/secretshardul/celo-subgraph-tutorial
+```
+
+- Refresh the page to see your deployed subgraph. It can take some hours for data to be synced, after which our
+  queries will return the desired results.
+
+![](https://github.com/figment-networks/learn-tutorials/raw/master/assets/celo-subgraph-03-query-explorer.png)
+
+- Time to run a GraphQL query! A default query is given which gets data of the first five gravatars. Press the
+  run button. Here's the query again for reference:
+
+```graphql
+# Get details of first five gravatars
+{
+  gravatars(first: 5) {
+    id
+    owner
+    displayName
+    imageUrl
+  }
 }
 ```
 
-In your index.tx file , import your payment card, your final code should look like this.
+You will get a result similar to
 
-```javascript
-import React, { useEffect, useState } from "react";
-import PaymentCard from "../components/PaymentCard";
-
-export default function Home() {
-  return (
-    <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0">
-      <div className="flex">
-        <PaymentCard planName={"Basic"} price={2} />
-      </div>
-      <div className="flex">
-        <PaymentCard planName={"Premium"} price={5} />
-      </div>
-      <div className="flex">
-        <PaymentCard planName={"Enterprise"} price={12} />
-      </div>
-    </div>
-  );
-}
-```
-
-Result below. However you can choose to add more cards to your own project and play around the styling, but for
-this tutorial we are just going to stick to three different payment plan
-
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677640148664/77bcbf3e-3a6e-4ea3-b559-971243e3bf9c.png)
-
-After this, click on your connect wallet button to see if it works, once it works its meant to show a disconnect
-button. However we also need to display the network its been connected to and the address of the wallet. So in
-your **_Header.tsx file,_** duplicate the button tag and add two more buttons to the header. Your final code
-should look like this
-
-```javascript
-import { Disclosure } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useCelo } from "@celo/react-celo";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-
-export default function Header() {
-  let [componentInitialized, setComponentInitialized] = useState(false);
-  let { initialised, address, network, connect, disconnect } = useCelo();
-
-  useEffect(() => {
-    if (initialised) {
-      setComponentInitialized(true);
+```graphql
+ {
+    "data": {
+        "gravatars": [
+            {
+                "displayName": "Carl",
+                "id": "0x0",
+                "imageUrl": "https://thegraph.com/img/team/team_04.png",
+                "owner": "0x243566e830705ce95b09ae66705c8b291b333310"
+            }
+        ]
     }
-  }, [initialised]);
-
-  return (
-    <Disclosure as="nav" className="bg-prosperity border-b border-black">
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-            <div className="relative flex h-16 justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button */}
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-1 focus:ring-inset focus:rounded-none focus:ring-black">
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
-                  <Image
-                    className="block h-8 w-auto lg:block"
-                    src="/logo.svg"
-                    width="24"
-                    height="24"
-                    alt="Celo Logo"
-                  />
-                </div>
-                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-black px-1 pt-1 text-sm font-medium text-gray-900"
-                  >
-                    Home
-                  </a>
-                </div>
-              </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {componentInitialized && address ? (
-                  <>
-                    <button
-                      type="button"
-                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
-                    >
-                      {network.name}
-                    </button>
-                    <button
-                      type="button"
-                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
-                    >
-                      {truncateAddress(address)}
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
-                      onClick={disconnect}
-                    >
-                      Disconnect
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    className="inline-flex content-center place-items-center rounded-full border border-wood bg-forest py-2 px-5 text-md font-medium text-snow hover:bg-black"
-                    onClick={() =>
-                      connect().catch((e) => console.log((e as Error).message))
-                    }
-                  >
-                    Connect
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 pt-2 pb-4">
-              <Disclosure.Button
-                as="a"
-                href="#"
-                className="block border-l-4 border-black py-2 pl-3 pr-4 text-base font-medium text-black"
-              >
-                Home
-              </Disclosure.Button>
-              {/* Add here your custom menu elements */}
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
-  );
 }
 ```
 
-Your output should look like this..you can see the Alfajores network and your wallet address after connecting
-your wallet.
+Note: Wait for the syncing to complete, otherwise you will see an empty result.
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677700379085/64c4e595-033b-4b95-bd01-403a25e6fe34.png)
+- How to use subgraphs in our apps? I've created a Postman public workspace for demonstration.
+  [Visit the Celo subgraph workspace](https://www.postman.com/cloudy-firefly-3880/workspace/the-graph-celo/request/9305744-4a75a867-c2b3-446b-be18-864c7e6550eb).
+  You can try out the predefined queries by pressing the run button.
 
-However, the address button is way to long and doesn't look nice, we can make this better by truncating the
-address. The tuncate method is a method ...... read more here. Add the following code below your imports and
-also call the truncate
+Press the code button on the right side. Select the language of your choice to get the generated code. For
+example we get this snippet for cURL. Paste it in your terminal to see the result
 
-```javascript
-const truncateAddress = (address: string) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
+#### Postman generate code button
+
+![](https://github.com/figment-networks/learn-tutorials/raw/master/assets/celo-subgraph-04-postman-code-button.png)
+
+#### Postman generated code results
+
+![](https://github.com/figment-networks/learn-tutorials/raw/master/assets/celo-subgraph-05-postman-generated-code.png)
+
+```curl
+    curl --location --request POST 'https://api.thegraph.com/subgraphs/name/secretshardul/the-graph-celo' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{"query":"{\n  gravatars(first: 5) {\n    id\n    owner\n    displayName\n    imageUrl\n  }\n}\n","variables":{}}'
 ```
 
-Your final code should look like this
+### Explanation
 
-```javascript
-import { Disclosure } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useCelo } from "@celo/react-celo";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+We have a pre-deployed contract GravatarRegistry.
 
-const truncateAddress = (address: string) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
-export default function Header() {
-  let [componentInitialized, setComponentInitialized] = useState(false);
-  let { initialised, address, network, connect, disconnect } = useCelo();
+- Gravatar stands for 'Globally Recognized Avatar'. They are profile pictures that are guaranteed to be unique. Did you know that the default avatars on GitHub and StackOverflow are actually gravatars?
+  This smart contract crates a registry for Gravatars. It has the following features:
 
-  useEffect(() => {
-    if (initialised) {
-      setComponentInitialized(true);
-    }
-  }, [initialised]);
-
-  return (
-    <Disclosure as="nav" className="bg-prosperity border-b border-black">
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-            <div className="relative flex h-16 justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button */}
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-1 focus:ring-inset focus:rounded-none focus:ring-black">
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
-                  <Image
-                    className="block h-8 w-auto lg:block"
-                    src="/logo.svg"
-                    width="24"
-                    height="24"
-                    alt="Celo Logo"
-                  />
-                </div>
-                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-b-2 border-black px-1 pt-1 text-sm font-medium text-gray-900"
-                  >
-                    Home
-                  </a>
-                </div>
-              </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {componentInitialized && address ? (
-                  <>
-                    <button
-                      type="button"
-                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
-                    >
-                      {network.name}
-                    </button>
-                    <button
-                      type="button"
-                      className="mr-2 inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
-                    >
-                      {truncateAddress(address)}
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex content-center place-items-center rounded-full border border-wood bg-black py-2 px-5 text-md font-medium text-snow hover:bg-forest"
-                      onClick={disconnect}
-                    >
-                      Disconnect
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    className="inline-flex content-center place-items-center rounded-full border border-wood bg-forest py-2 px-5 text-md font-medium text-snow hover:bg-black"
-                    onClick={() =>
-                      connect().catch((e) => console.log((e as Error).message))
-                    }
-                  >
-                    Connect
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-          <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 pt-2 pb-4">
-              <Disclosure.Button
-                as="a"
-                href="#"
-                className="block border-l-4 border-black py-2 pl-3 pr-4 text-base font-medium text-black"
-              >
-                Home
-              </Disclosure.Button>
-              {/* Add here your custom menu elements */}
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
-  );
-}
-```
-
-After this we would be writing our smart contract that interacts with our subscription, so head over to your
-terminal and run this command
-
-```bash
-yarn run hardhat:accounts
-```
-
-to view the account that is set up. You should get an error message stating you do not have any account setup,
-therefore we need a deployer wallet. To do this rename the file **_env.example to_.env** and add a test private
-key that has already been given by celo [here](https://celo-composer-community-docs.vercel.app/docs/frameworks/react-app/installation-and-setup)
-and copy the private key already given to us .
-
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677728444433/2940d0a2-d6cf-412c-ad21-5814e087115d.png align="center")
-
-After this, re-run the above command and you should see an address in your terminal. Verify if the account as
-some celo in it via [celoscan](https://celoscan.io/) and if it doesn't you can request for a test token via
-[celo faucet](https://faucet.celo.org/). Head over to
-[open zepplin contracts](https://www.openzeppelin.com/contracts) and make use of the wizard shown below and
-copy the code generated into a new file created in the contract folder called **_MockCUSD.sol file_**
-
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1677729295502/cc133e24-48ea-402c-bced-7533fa27d873.png align="center")
-
-Let's install some OpenZeppelin contracts so we can get access to the ERC-721 contracts. In your terminal,
-execute the following command:
-
-```bash
-cd..
-cd hardhat
-yarn add @openzeppelin/contracts
-```
-
-- In the contracts folder, create a new Solidity file called **_PaymentSubscription.sol_**
-
-Now we would write some code in the **_PaymentSubscription.sol_**. We would be importing [Openzeppelin's ERC721 Contract](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol).
+- Create new gravatar
+- View gravatars of other users
+- Update name and image of your gravatar
 
 ```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+    pragma solidity ^0.4.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
+contract GravatarRegistry {
+    event NewGravatar(uint id, address owner, string displayName, string imageUrl);
+    event UpdatedGravatar(uint id, address owner, string displayName, string imageUrl);
 
-contract PaymentSubscription is Pausable, Ownable {
-    //Available plans
-    enum Plan {
-        Basic,
-        Premium,
-        Enterprise
+    struct Gravatar {
+        address owner;
+        string displayName;
+        string imageUrl;
     }
 
-    struct Subscription {
-        Plan plan;
-        uint256 price;
-        uint256 startDate;
-        uint256 endDate;
-        uint256 nextCharge;
-        bool active;
+    Gravatar[] public gravatars;
+
+    mapping (uint => address) public gravatarToOwner;
+    mapping (address => uint) public ownerToGravatar;
+
+    function createGravatar(string _displayName, string _imageUrl) public {
+        require(ownerToGravatar[msg.sender] == 0);
+        uint id = gravatars.push(Gravatar(msg.sender, _displayName, _imageUrl)) - 1;
+
+        gravatarToOwner[id] = msg.sender;
+        ownerToGravatar[msg.sender] = id;
+
+        emit NewGravatar(id, msg.sender, _displayName, _imageUrl);
     }
 
-    struct PlanDetail {
-        Plan plan;
-        uint256 price;
-        uint256 duration;
+    function getGravatar(address owner) public view returns (string, string) {
+        uint id = ownerToGravatar[owner];
+        return (gravatars[id].displayName, gravatars[id].imageUrl);
     }
 
-    //All plans
-    mapping(Plan => PlanDetail) public plans;
+    function updateGravatarName(string _displayName) public {
+        require(ownerToGravatar[msg.sender] != 0);
+        require(msg.sender == gravatars[ownerToGravatar[msg.sender]].owner);
 
-    //All subscriptions
-    mapping(address => Subscription) public subscriptions;
+        uint id = ownerToGravatar[msg.sender];
 
-    //Active subscriptions
-    mapping(address => bool) public activeSubscriptions;
-
-    //Emits when a new plan is created
-    event PlanCreated(Plan plan, uint256 price, uint256 duration);
-
-    event SubscriptionCreated(address indexed subscriber, Plan plan);
-    event SubscriptionCancelled(address indexed subscriber);
-    event SubscriptionCharged(
-        address indexed subscriber,
-        Plan plan,
-        uint256 nextCharge
-    );
-
-    //Token used for subscription payments
-    address public subscriptionToken;
-
-    constructor(address _subscriptionToken) {
-        require(_subscriptionToken != address(0), "Invalid token address");
-        subscriptionToken = _subscriptionToken;
-        plans[Plan.Basic] = PlanDetail(Plan.Basic, 2e18, 1 hours);
-        plans[Plan.Premium] = PlanDetail(Plan.Premium, 5e18, 1 hours);
-        plans[Plan.Enterprise] = PlanDetail(Plan.Enterprise, 12e18, 1 hours);
-
-        emit PlanCreated(Plan.Basic, 2e18, 1 hours);
-        emit PlanCreated(Plan.Premium, 5e18, 1 hours);
-        emit PlanCreated(Plan.Enterprise, 12e18, 1 hours);
+        gravatars[id].displayName = _displayName;
+        emit UpdatedGravatar(id, msg.sender, _displayName, gravatars[id].imageUrl);
     }
 
-    function subscribe(Plan _plan, uint8 duration) public whenNotPaused {
-        require(uint8(_plan) <= 2, "Invalid plan");
-        require(duration > 0, "Invalid duration");
-        require(duration <= 12, "Invalid duration");
-        require(!activeSubscriptions[msg.sender], "Already subscribed");
+    function updateGravatarImage(string _imageUrl) public {
+        require(ownerToGravatar[msg.sender] != 0);
+        require(msg.sender == gravatars[ownerToGravatar[msg.sender]].owner);
 
-        uint256 requiredAllowance = plans[_plan].price * duration;
+        uint id = ownerToGravatar[msg.sender];
 
-        //Check if the user has approved the contract to spend the required amount, if not revert
-        require(
-            IERC20(subscriptionToken).allowance(msg.sender, address(this)) >=
-                requiredAllowance,
-            "Insufficient allowance"
-        );
-
-        //Check that we can charge for the first month
-        require(
-            IERC20(subscriptionToken).balanceOf(msg.sender) >=
-                plans[_plan].price,
-            "Insufficient balance"
-        );
-
-        subscriptions[msg.sender] = Subscription({
-            plan: _plan,
-            price: plans[_plan].price,
-            startDate: block.timestamp,
-            nextCharge: block.timestamp + plans[_plan].duration,
-            endDate: block.timestamp + plans[_plan].duration * duration,
-            active: true
-        });
-
-        _charge(msg.sender);
-
-        activeSubscriptions[msg.sender] = true;
-
-        emit SubscriptionCreated(msg.sender, _plan);
+        gravatars[id].imageUrl =  _imageUrl;
+        emit UpdatedGravatar(id, msg.sender, gravatars[id].displayName, _imageUrl);
     }
 
-    function _charge(address susbcriber) internal {
-        require(
-            IERC20(subscriptionToken).transferFrom(
-                susbcriber,
-                address(this),
-                subscriptions[susbcriber].price
-            ),
-            "Transfer failed"
-        );
+}
 
-        //Set the next charge date
-        subscriptions[susbcriber].nextCharge =
-            block.timestamp +
-            plans[subscriptions[susbcriber].plan].duration;
+```
 
-        if (
-            subscriptions[susbcriber].nextCharge >
-            subscriptions[susbcriber].endDate
-        ) {
-            _cancel(susbcriber);
-        }
+Note the events NewGravatar and UpdatedGravatar in the code above. The Graph protocol updates its index with fresh data whenever events are fired. Look at subgraph.yaml, which is the starting point for creating subgraphs. It contains the following information:
 
-        emit SubscriptionCharged(
-            susbcriber,
-            subscriptions[susbcriber].plan,
-            subscriptions[susbcriber].nextCharge
-        );
-    }
+- Subgraph description and source code repository
+- GraphQL schema file location
+- Contract related data: contract name, network, address and ABIs
+- Events to listen to. We are listening to NewGravatar(uint256,address,string,string) and UpdatedGravatar(uint256,address,string,string) events.
+- Event handlers: Graph protocol reads the transaction data whenever a registered event is fired. This raw transaction data must be processed before it can be useful. Event handlers specify what data points must be read, and are responsible for populating this data into the GraphQL schema. Note the event handlers handleNewGravatar and handleUpdatedGravatar.
 
-    function _cancel(address subscriber) internal {
-        activeSubscriptions[subscriber] = false;
-        delete subscriptions[subscriber];
+```javascript
+    specVersion: 0.0.2
+description: Gravatar contract subgraph for Celo
+repository: https://github.com/secretshardul/the-graph-celo
+schema:
+file: ./schema.graphql
+dataSources:
+- kind: ethereum/contract
+    name: Gravity
+    network: celo
+    source:
+    address: '0x56d04968f959ae609a32c8eadb8cd3db90490a7f' # Deployed contract address
+    abi: Gravity
+    mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.4
+    language: wasm/assemblyscript
+    entities:
+        - Gravatar
+    abis:
+        - name: Gravity
+        file: ./abis/Gravity.json
+    eventHandlers:
+        - event: NewGravatar(uint256,address,string,string)
+        handler: handleNewGravatar
+        - event: UpdatedGravatar(uint256,address,string,string)
+        handler: handleUpdatedGravatar
+    file: ./src/mapping.ts
+```
 
-        emit SubscriptionCancelled(subscriber);
-    }
+Look at the event handler code in src/mapping.ts. Note how owner, displayName and imageUrl fields are updated and saved.
 
-    function charge(address subscriber) public onlyOwner whenNotPaused {
-        require(activeSubscriptions[subscriber], "Not subscribed");
-        require(
-            subscriptions[subscriber].nextCharge <= block.timestamp,
-            "Not time to charge yet"
-        );
+```javascript
+import { NewGravatar, UpdatedGravatar } from "../generated/Gravity/Gravity";
+import { Gravatar } from "../generated/schema";
 
-        require(
-            IERC20(subscriptionToken).allowance(subscriber, address(this)) >=
-                subscriptions[subscriber].price,
-            "Insufficient allowance"
-        );
-        _charge(subscriber);
-    }
+// Save details whenever a new gravatar is created
+export function handleNewGravatar(event: NewGravatar): void {
+  let gravatar = new Gravatar(event.params.id.toHex());
+  gravatar.owner = event.params.owner;
+  gravatar.displayName = event.params.displayName;
+  gravatar.imageUrl = event.params.imageUrl;
+  gravatar.save();
+}
 
-    function withdrawSubscriptionToken(
-        address to,
-        uint256 amount
-    ) public onlyOwner {
-        require(
-            IERC20(subscriptionToken).transfer(to, amount),
-            "Transfer failed"
-        );
-    }
+// Update index data whenever gravatar data is updated on the smart contract
+export function handleUpdatedGravatar(event: UpdatedGravatar): void {
+  let id = event.params.id.toHex();
+  let gravatar = Gravatar.load(id);
+  if (gravatar == null) {
+    gravatar = new Gravatar(id);
+  }
+  gravatar.owner = event.params.owner;
+  gravatar.displayName = event.params.displayName;
+  gravatar.imageUrl = event.params.imageUrl;
+  gravatar.save();
 }
 ```
 
-Compile the contract, open up a terminal and execute these commands
+Look at [schema.graphql](https://github.com/secretshardul/the-graph-celo/blob/master/schema.graphql). Note that we had declared Gravatar as an entity in [subgraph.yaml](https://github.com/secretshardul/the-graph-celo/blob/master/subgraph.yaml). We define our entity Gravatar here using the @entity annotation.
 
-```bash
-npx hardhat compile
+```typescript
+    type Gravatar @entity {
+    id: ID!
+    owner: Bytes!
+    displayName: String!
+    imageUrl: String!
+}
 ```
 
-If there are no errors, you are good to go 😚
+Look at [migrations/3_create_gravatars.js](https://github.com/secretshardul/the-graph-celo/blob/master/migrations/3_create_gravatars.js). When this contract was created, we created a gravatar for Carl for demonstration purposes.
 
-Finally we have successfully completed our payment subscription UI and the contract and the next step is to
-write test for our smart contract which would be done in the next tutorial.
+```javascript
+const GravatarRegistry = artifacts.require("./GravatarRegistry.sol");
+
+module.exports = async function (deployer) {
+  const registry = await GravatarRegistry.deployed();
+
+  console.log("Account address:", registry.address);
+
+  let accounts = await web3.eth.getAccounts();
+  console.log("Accounts", accounts);
+  await registry.createGravatar(
+    "Carl",
+    "https://thegraph.com/img/team/team_04.png",
+    {
+      from: accounts[0],
+    }
+  );
+};
+```
+
+## Creating subgraphs for your own contracts
+
+Make changes to the contracts. You may want to edit or replace
+[Gravity.sol](https://github.com/secretshardul/the-graph-celo/blob/master/contracts/Gravity.sol) with your
+custom contract. Create a file .env which will contain environment variables. Look at
+[.env-template](https://github.com/secretshardul/the-graph-celo/blob/master/.env-template) for the required
+format. We need two variables:
+
+- DATAHUB_API_KEY: Sign up for Datahub and pick Celo from the available protocols. Copy the API key and paste
+  it here. DataHub provides private RPC endpoints for popular blockchains, letting us create high performance
+  apps. We get a free tier of 100k requests per day.
+
+- PRIVATE_KEY: Private key of a Celo account. This is different from your Mnemonic. You will need real
+  CELO tokens on this account since we are deploying to the mainnet.
+
+You can optionally look at [truffle.js](https://github.com/secretshardul/the-graph-celo/blob/master/truffle.js)
+to see how these parameters are used in code. This script is responsible for compiling our code and deploying
+it to Celo.
+
+```javascript
+       require('babel-register')
+  require('babel-polyfill')
+  require('dotenv').config()
+
+  const HDWalletProvider = require('truffle-hdwallet-provider')
+  const ContractKit = require('@celo/contractkit')
+  const Web3 = require('web3')
+
+  // We need a Celo provider so that contract can be deployed to Celo
+  function getCeloProvider(network) {
+  const web3 = new Web3(`https://celo-${network}--rpc.datahub.figment.io/apikey/${process.env.DATAHUB_API_KEY}/`)
+  const account = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY)
+
+  const client = ContractKit.newKitFromWeb3(web3)
+  client.addAccount(account.privateKey)
+  return client.web3.currentProvider
+  }
+
+  const alfajoresProvider = getCeloProvider('alfajores')
+  const celoMainnetProvider = getCeloProvider('mainnet')
+
+  module.exports = {
+  networks: {
+      development: { // Local development
+          host: '127.0.0.1',
+          port: 9545,
+          network_id: '*',
+      },
+      // Change network to celo-alfajores in subgraph.yaml for testnet support
+      celo-alfajores: {
+          provider: alfajoresProvider,
+          network_id: '44787',
+          skipDryRun: true,
+      },
+      celo: {
+          provider: celoMainnetProvider,
+          network_id: '42220'
+      },
+  },
+  compilers: {
+      solc: {
+      version: '0.4.25'
+      }
+  }
+  }
+
+```
+
+Run the deployment script. This will build your contract and deploy it on Celo mainnet. Ensure that you have Celo tokens on your address.
+truffle migrate --network celo
+You should get a result similar to
+
+```bash
+    ✔ Apply migrations
+✔ Load subgraph from subgraph.yaml
+Compile data source: Gravity => build/Gravity/Gravity.wasm
+✔ Compile subgraph
+Copy schema file build/schema.graphql
+Write subgraph file build/Gravity/abis/Gravity.json
+Write subgraph manifest build/subgraph.yaml
+✔ Write compiled subgraph to build/
+Add file to IPFS build/schema.graphql
+                .. QmbSFRGGvHM7Cn8YSjDL41diDMxN4LQUDEMqaa5VVc5sC4
+Add file to IPFS build/Gravity/abis/Gravity.json
+                .. QmajZTadknSpgsCWRz9fG6bXFHdpVXPMWpx9yMipz3VtMQ
+Add file to IPFS build/Gravity/Gravity.wasm
+                .. QmbK8bwncci52cstF3P8Q8i4oGjrMt1pUqdv5Uf1VXqXdb
+✔ Upload subgraph to IPFS
+
+Build completed: QmXWN5HVtKsRdCKc7HUthjvuyPiwkCNeYJQknsAa5AqQ8K
+
+Deployed to https://thegraph.com/explorer/subgraph/secretshardul/celo-subgraph-tutorial
+
+Subgraph endpoints:
+Queries (HTTP):     https://api.thegraph.com/subgraphs/name/secretshardul/celo-subgraph-tutorial
+Subscriptions (WS): wss://api.thegraph.com/subgraphs/name/secretshardul/celo-subgraph-tutorial
+```
+
+Note the address of the deployed contract. Replace the address field in [subgraph.yaml](https://github.com/secretshardul/the-graph-celo/blob/master/subgraph.yaml) with this field.
+Depending on your contract, you may need to edit the [handler code](https://github.com/secretshardul/the-graph-celo/blob/master/src/mapping.ts) and [GraphQL schema](https://github.com/secretshardul/the-graph-celo/blob/master/schema.graphql).
+Here are some subgraph templates to help you out:
+
+- [ERC 20 Fungible Tokens](https://github.com/secretshardul/the-graph-celo/blob/master/schema.graphql)
+- [ERC 721 Non-Fungible Tokens(NFTs)](https://github.com/wighawag/eip721-subgraph)
+
+Generate Graph build files using
+
+```bash
+    yarn codegen
+ or
+npm run codegen
+```
+
+You will get an output similar to
+
+```bash
+    yarn run v1.22.10
+$ graph codegen
+Skip migration: Bump mapping apiVersion from 0.0.1 to 0.0.2
+Skip migration: Bump mapping apiVersion from 0.0.2 to 0.0.3
+Skip migration: Bump mapping apiVersion from 0.0.3 to 0.0.4
+Skip migration: Bump mapping specVersion from 0.0.1 to 0.0.2
+✔ Apply migrations
+✔ Load subgraph from subgraph.yaml
+Load contract ABI from abis/Gravity.json
+✔ Load contract ABIs
+Generate types for contract ABI: Gravity (abis/Gravity.json)
+Write types to generated/Gravity/Gravity.ts
+✔ Generate types for contract ABIs
+✔ Generate types for data source templates
+✔ Load data source template ABIs
+✔ Generate types for data source template ABIs
+✔ Load GraphQL schema from schema.graphql
+Write types to generated/schema.ts
+✔ Generate types for GraphQL schema
+
+Types generated successfully
+
+✨  Done in 16.31s.
+```
+
+Run the Graph protocol [deployment script](https://learn.figment.io/tutorials/subgraphs-on-celo.md#3-show-me-the-code) mentioned earlier.
+
+### Caveats and considerations
+
+- Deployed subgraphs can't be renamed or deleted, although they can be updated.
+- Subgraphs only support reads/queries. You can't send transactions to update the blockchain state!
+
+### Further reading
+
+- The Graph documentation
+- graphql.org
+
+### Conclusion
+
+We have learned how the Graph protocol is helpful, and how we can build and deploy our own subgraphs.
