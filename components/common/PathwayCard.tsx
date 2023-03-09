@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react/jsx-no-comment-textnodes */
 import Img, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,7 +9,7 @@ type Props = {
     key: string;
     name: string;
     url: string;
-    image: StaticImageData;
+    image: any;
     desc: string;
     tags: string[];
   };
@@ -23,7 +25,9 @@ function PathwayCard({ data }: Props) {
       <Link href={data.url}>
         <Img
           src={data.image}
-          className="rounded-t-2xl"
+          // width={450}
+          // height={850}
+          className="rounded-t-2xl w-full object-cover"
           alt="Flutter Pathway - Celo Academy"
         />
       </Link>

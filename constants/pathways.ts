@@ -1,11 +1,18 @@
-import FlutterPathway from "../public/images/stackshift.jpeg";
+import week1 from "../public/images/Templates/week1.png";
+import week2 from "../public/images/Templates/week1.png";
+import week3 from "../public/images/Templates/week1.png";
+import week4 from "../public/images/Templates/week1.png";
+import week5 from "../public/images/Templates/week1.png";
+import week6 from "../public/images/Templates/week1.png";
+import week7 from "../public/images/Templates/week1.png";
+import week8 from "../public/images/Templates/week1.png";
 
 export const pathways = [
   {
     key: "week-one",
     name: "Week one: Introduction ",
     url: "/pathway/week-one",
-    image: FlutterPathway,
+    image: week1,
     desc: "An introduction to Celo blockchain, Celo CLI and Celo composer. ",
     tags: ["React", "celo", "web3"],
   },
@@ -13,7 +20,7 @@ export const pathways = [
     key: "week-two",
     name: "Getting started with Celo composer",
     url: "/pathway/week-two",
-    image: FlutterPathway,
+    image: week2,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
     tags: ["react", "celo", "web3"],
   },
@@ -21,7 +28,7 @@ export const pathways = [
     key: "week-three",
     name: "NFTs",
     url: "/pathway/week-three",
-    image: FlutterPathway,
+    image: week3,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
     tags: ["react", "celo", "web3"],
   },
@@ -29,7 +36,7 @@ export const pathways = [
     key: "week-four",
     name: "Oracles",
     url: "/pathway/week-four",
-    image: FlutterPathway,
+    image: week4,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
     tags: ["react", "celo", "web3"],
   },
@@ -37,7 +44,7 @@ export const pathways = [
     key: "week-five",
     name: "ReFi",
     url: "/pathway/week-five",
-    image: FlutterPathway,
+    image: week5,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
     tags: ["react", "celo", "web3"],
   },
@@ -45,7 +52,7 @@ export const pathways = [
     key: "week-six",
     name: "DAOs",
     url: "/pathway/week-six",
-    image: FlutterPathway,
+    image: week6,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
     tags: ["react", "celo", "web3"],
   },
@@ -53,7 +60,7 @@ export const pathways = [
     key: "week-seven",
     name: "Subgraphs",
     url: "/pathway/week-seven",
-    image: FlutterPathway,
+    image: week7,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
     tags: ["react", "celo", "web3"],
   },
@@ -61,7 +68,7 @@ export const pathways = [
     key: "week-eight",
     name: "ODIS | Social payments",
     url: "/pathway/week-eight",
-    image: FlutterPathway,
+    image: week8,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
     tags: ["react", "celo", "web3"],
   },

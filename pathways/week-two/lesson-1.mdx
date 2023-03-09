@@ -1,6 +1,6 @@
 ---
-title: Celo composer
-description: Building a charity donation dApp using Celo Composer, React + RainbowKit Celo.
+title: Truffle and Celo
+description: Deploying contracts on Celo using Truffle.
 lesson: "1"
 restriction: "YesDialog"
 publishedAt: "2023-02-01"
@@ -8,439 +8,311 @@ publishedAt: "2023-02-01"
 
 ## Introduction
 
-### Celo composer
+This guide walks you through the basics of how to deploy your own smart contracts on Celo networks. As Celo
+is fully EVM compatible, we inherit the rich developer ecosystem and tooling of the Ethereum community. You
+will be deploying a typical hello world smart contract onto the Alfajores testnet with typical Ethereum
+tools like Truffle and Ganache.
 
-The Celo Composer is a starter pack built with [react-celo](https://github.com/celo-org/react-celo) and Rainbowkit Celo to get you up and running fast in developing
-DApps on the Celo blockchain. This starter pack is best suited for web2 developers currently transitioning into
-web3 as it abstracts all the complexities involved in setting up and developing Defi applications and replaces
-them with a plug-and-play environment.
+### Setup
 
-The starter pack, which currently supports React, React-Native, and Flutter requires little to no
-configurations from you as it eases you into the web3 sphere.
-
-#### A quick look at what we are building
-
-![](https://cdn-images-1.medium.com/max/800/1*wZudYRf5GTxy9oD43drNWQ.png)
-
-- you can check out the completed project on [Github](https://github.com/amoweolubusayo/charity-celo)
-
-### Setting up your development environment
-
-Here are the steps to take to make sure your development environment is properly set up
-
-- Install Node.js and NPM (Node Package Manager) on your machine.
-- Install the Celo Extension Wallet on your browser or add Celo test network (Alfajores) to your MetaMask Wallet
-
-### Creating your project using Celo Composer
-
-In your terminal, run the following command
+This guide assumes that you have a basic Node/NPM setup. If so, you can install truffle with:
 
 ```bash
-npx @celo/celo-composer create
+    npm install -g truffle
 ```
 
-We are working with React so when prompted to choose a front-end framework, select React
+- [Learn more about the Truffle development framework here.](https://www.trufflesuite.com/docs/truffle/overview)
 
-![](https://i.imgur.com/WPCMTH0.png)
+This is a basic truffle project, with some additional files to help us with account management and deploying
+to a remote Celo test net node. Run npm install to install of the project dependencies.
 
-Next up, choose a web3 library for react app, select Rainbokit-celo
+### Hello World!
 
-![](https://i.imgur.com/lSkmoz3.png)
+Add a contract with the command
 
-We are using built-in contracts from Celo-Composer and will be selecting Hardhat framework, so select Hardhat
+```bash
+   truffle create contract HelloWorld
+```
 
-![](https://i.imgur.com/ZUA2MKk.png)
+We will not go into the details of how to write Solidity in this exercise, but you can learn more at the
+[Solidity documentation page](https://solidity.readthedocs.io/en/latest/).
 
-For next steps, we will be prompted to create a Subgraph. We would not be creating a subgraph, so go ahead to
-select No
-
-![](https://i.imgur.com/Wvir6rZ.png)
-
-Then, proceed to give your project a name
-
-![](https://i.imgur.com/6BInaOQ.png)
-
-You did it! You just created a starter project dApp in few minutes using Celo-Composer
-
-![](https://i.imgur.com/LZRt683.png)
-
-Navigate to your project and let's continue buidling.
-
-### Building out the smart contract
-
-In your IDE, drilldown packages to see the hardhat foler, here we will see contracts folder with inbuilt
-contracts
-
-![](https://i.imgur.com/KfOuJvO.png)
-
-Open the SupportToken.sol as this is the one we will be using. Here is how the code looks like
+The contract will just store a name for now:
 
 ```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.17;
+    pragma solidity >=0.5.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+contract HelloWorld {
+  string name = 'Celo';
 
-/**
- * @notice A simple ERC20 Token implementation that also accepts donation for the project
- */
-contract SupportToken is ERC20 {
-    uint sentIn;
-    address payable owner;
-
-    modifier onlyOwner() {
-        require(msg.sender == owner);
-        _;
-    }
-
-    constructor() ERC20("Support Token", "STT") {
-        /// @notice mint 10000 tokens to the owner
-        _mint(msg.sender, 10000e18);
-        owner = payable(msg.sender);
-        sentIn = 0;
-    }
-
-    function acceptDonation(uint amount)
-        public
-        payable
-        returns (bool accepted)
-    {
-        require(amount == msg.value, "Invalid amount!");
-
-        sentIn += msg.value;
-
-        return true;
-    }
-
-    function withdrawChest() public onlyOwner returns (bool) {
-        bool success = owner.send(address(this).balance);
-
-        if (success) return true;
-
-        return false;
-    }
-}
-```
-
-Basically, this contract allows users to donate to the project by sending funds to the contract address.
-It also allows the owner of the contract to withdraw the donated funds.
-
-Create a `.env` file to store your environment variables, copy your private key from your Celo/Metamask wallet
-as applicable
-
-```javascript
-CELO_NETWORK=https://alfajores-forno.celo-testnet.org
-PRIVATE_KEY=YOUR_PRIVATE_KEY
-```
-
-Compile the contract by running the following command in the terminal
-
-```bash
-cd packages/hardhat/contracts
-npm install --save-dev hardhat
-npx hardhat compile
-```
-
-- Incase you run into any error like this ![](https://i.imgur.com/OYopWwo.png)
-
-- As at February 2023, hardhat waffle has been depreciated, replace that in your hardhatconfig.js file with chai matchers.
-
-Change
-
-```javascript
-require("@nomiclabs/hardhat-waffle");
-```
-
-to
-
-```javascript
-require("@nomicfoundation/hardhat-chai-matchers");
-```
-
-After a successful compilation, here is what you should see,
-
-```bash
- Compiled x Solidity files successfully`
-```
-
-### Testing your Smart Contract
-
-It is good practice to test your code. In the test folder, create a new file called support-token-test.js and
-test for different use cases like below
-
-```javascript
-import { ethers } from "hardhat";
-import { Signer } from "ethers";
-import { expect } from "chai";
-
-describe("SupportToken", function () {
-  let owner;
-  let supportToken;
-
-  beforeEach(async function () {
-    // Get the owner of the contract
-    [owner] = await ethers.getSigners();
-
-    // Deploy the SupportToken contract
-    const supportTokenFactory = await ethers.getContractFactory(
-      "SupportToken",
-      owner
-    );
-    supportToken = await supportTokenFactory.deploy();
-
-    // Wait for the contract to be mined
-    await supportToken.deployed();
-  });
-
-  it("should mint 10000 tokens to the owner", async function () {
-    const balance = await supportToken.balanceOf(await owner.getAddress());
-    expect(balance).to.equal(10000 * 10 ** 18);
-  });
-
-  it("should accept donation and update sentIn variable", async function () {
-    const donationAmount = 1000;
-
-    // Send a donation to the contract
-    await owner.sendTransaction({
-      to: supportToken.address,
-      value: donationAmount,
-    });
-
-    // Check that the sentIn variable has been updated correctly
-    const sentIn = await supportToken.sentIn();
-    expect(sentIn).to.equal(donationAmount);
-  });
-
-  it("should withdraw donation to owner's address", async function () {
-    const donationAmount = 1000;
-
-    // Send a donation to the contract
-    await owner.sendTransaction({
-      to: supportToken.address,
-      value: donationAmount,
-    });
-
-    // Get the initial balance of the owner's address
-    const initialBalance = await owner.getBalance();
-
-    // Withdraw the donation to the owner's address
-    await supportToken.withdrawChest();
-
-    // Check that the owner's address balance has been updated correctly
-    const expectedBalance = initialBalance.add(donationAmount);
-    const actualBalance = await owner.getBalance();
-    expect(actualBalance).to.equal(expectedBalance);
-  });
-});
-```
-
-### Deploying your Smart Contract
-
-Deploy the contract to the network by creating a deploy.js file in the scripts directory
-
-```bash
-cd packages/hardhat/scripts
-```
-
-```javascript
-const hre = require("hardhat");
-
-async function main() {
-  const SupportToken = await hre.ethers.getContractFactory("SupportToken");
-  const supportToken = await SupportToken.deploy();
-  await supportToken.deployed();
-  console.log("SupportToken address deployed to:", supportToken.address);
-}
-
-main();
-```
-
-Then run this command
-
-```bash
-npx hardhat --network alfajores run scripts/deploy.js
-```
-
-After a succesful deployment, you would see the message
-
-```bash
-SupportToken address deployed to: 0x188AB17e37aF04a43f69f1454Fc4caC3edd3Af2D
-```
-
-You can also verify your contract on [celoscan](https://alfajores.celoscan.io)
-
-![](https://i.imgur.com/O4jjcBz.png)
-
-### Creating your frontend
-
-Let us now start out our React frontend, we start by navigating to the react-app folder after the hardhat folder.
-
-![](https://i.imgur.com/9fBFUOw.png)
-
-For starters, we need the web3 package so let's start by installing that running this command
-
-```bash
-npm install web3
-```
-
-Go to components folder and create a new component, you can call it Charities.tsx. In your component,
-import React like this
-
-```javascript
-import React, { useState } from "react";
-```
-
-Create a charity card with props making your code look like this
-
-```typescript
-type CharityCardProps = {
-  imageSrc: string;
-  name: string;
-  description: string;
-  address: string;
-  onDonate: (amount: string) => void;
-  donated: boolean
-};
-
-const CharityCard = ({
-  imageSrc,
-  name,
-  description,
-  address,
-  onDonate,
-}: CharityCardProps) => {
-  const [donationAmount, setDonationAmount] = useState("");
-```
-
-Create a variable charities as well with values
-
-```typescript
-const charities = [
-  {
-    name: "British Heart Foundation",
-    description: "Description of Charity 1",
-    address: "0x1234...",
-    imageSrc: "https://via.placeholder.com/150?text=Charity+1",
-  },
-  {
-    name: "World Vision UK",
-    description: "Description of Charity 2",
-    address: "0x5678...",
-    imageSrc: "https://via.placeholder.com/150?text=Charity+2",
-  },
-  {
-    name: "Save the Children",
-    description: "Description of Charity 3",
-    address: "0x9abc...",
-    imageSrc: "https://via.placeholder.com/150?text=Charity+3",
-  },
-];
-```
-
-The rest of the code can look like this
-
-```javascript
-const Charities = () => {
-  const handleDonate = (amount: string) => {
-    // Send donation to the charity address
-  };
-
-  return (
-    <div className="container">
-      <div className="row">
-        {charities.map((charity, index) => (
-          <div key={index} className="col-md-4">
-            <CharityCard {...charity} onDonate={handleDonate} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default Charities;
-```
-
-Create a wrapper that handles the contract, in your root folder, create a SupportTokenWrapper.js file and
-call your contract together with specifying the function you want to call in your component
-
-```javascript
-export async function getContract() {
-  console.log("hey");
-  const contractAddress = "0x188AB17e37aF04a43f69f1454Fc4caC3edd3Af2D";
-  const contractABI = abi;
-  let supportTokenContract;
-  try {
-    const { ethereum } = window;
-    console.log(ethereum.chainId);
-    if (ethereum.chainId === "0xaef3") {
-      const provider = new providers.Web3Provider(ethereum);
-      console.log("provider", provider);
-      const signer = provider.getSigner();
-      supportTokenContract = new Contract(contractAddress, contractABI, signer);
-    } else {
-      throw new Error("Please connect to the Alfajores network");
-    }
-  } catch (error) {
-    console.log("ERROR:", error);
+  function getName() public view returns (string memory) {
+    return name;
   }
-  console.log(supportTokenContract);
-  return supportTokenContract;
-}
 
-export async function donate(amount) {
-  // Approve the transfer of donation amount to the charity address
-
-  const contract = await getContract();
-  const approvalTx = await contract.approve(
-    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-    amount
-  );
-  console.log(await contract);
-  console.log(await approvalTx);
-  // Transfer tokens to another account
-  const transferTx = await contract.transfer(
-    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-    amount
-  );
-  console.log("Transfer transaction hash: ", transferTx.transactionHash);
-  const finalTx = await contract.acceptDonation(amount, {
-    value: amount,
-  });
+  function setName(string calldata newName) external {
+    name = newName;
+  }
 }
 ```
 
-From here, notice the 2 transactions that will happen, first we will grant permission to access funds, next is
-transferring the funds from the donators account to the receivers address.
+###Compile the contract
 
-Run you application by using this command
+Before you deploy the contract, you need to compile the Solidity code into Ethereum bytecode. The following
+truffle command will look in the ./contracts directory and compile any new or updated Solidity (.sol)
+contracts.
 
 ```bash
-npm run dev
+truffle compile
 ```
 
-Your application will look like this
+After compiling the contract, you need to create a migration to deploy the contract. For that, create a file
+in the ./migrations/ folder named 2_deploy_helloworld.js:
 
-![](https://i.imgur.com/lr2iMmZ.png)
+- [Learn more about Truffle migrations](https://www.trufflesuite.com/docs/truffle/getting-started/running-migrations).
 
-Fill in the donation amount in any charity of your choice and click donate. Your wallet will pop up as so, to
-first give access to funds
+```javascript
+var HelloWorld = artifacts.require("HelloWorld");
 
-![](https://i.imgur.com/4uev7TB.png)
+module.exports = function (deployer) {
+  deployer.deploy(HelloWorld);
+};
+```
 
-![](https://i.imgur.com/AoKZvOa.png)
+- [You can also learn more about Truffle configuration options.](https://www.trufflesuite.com/docs/truffle/reference/configuration)
 
-And then send to the receiving account
+### Deploy to Alfajores (remotely)
 
-![](https://i.imgur.com/XkxAslx.png)
+When you deploy contracts to the Celo network with a remote node, you have to sign the contract deployment
+transaction locally before sending it to the remote node to be broadcast to the network. This presents some
+unique challenges when using Ethereum development tools (like Truffle) because Celo transaction objects are
+slightly different than Ethereum transaction objects.
 
-If you look through your wallet transactions, you will find these
+When you are ready to deploy your contract to Alfajores, you'll need a Celo client connected to the testnet.
+In this exercise you will connect to a remote node to read and write to the public testnet (Alfajores), but
+you could also run a testnet node locally to perform the same actions.
 
-![](https://i.imgur.com/aVxYvXD.png)
+Here are the steps to go through to deploy the contract to the Alfajores testnet.
 
-The recipient can confirm the tokens in their wallet as well by importing the token with the contract address
-and checking
+- Connect to Forno (a remote Celo node service provider)
+- Get personal account information (generate a private key if required, stored in ./.secret)
+- Get your personal account address and fund it via the faucet
+- Get the compiled contract bytecode
+- Create and sign the contract deployment transaction
+- Send transaction to the network
 
-![](https://i.imgur.com/dmZwxwy.png)
+Make sure the dependencies are installed with:
 
-Great job! You just created a simple charity donation dApp with Celo Composer and React Rainbowkit!
+```bash
+    npm install
+
+```
+
+Run the provided script with:
+
+```bash
+   node celo_deploy.js
+
+```
+
+```javascript
+// celo_deploy.js
+
+const Web3 = require("web3");
+const ContractKit = require("@celo/contractkit");
+const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
+const kit = ContractKit.newKitFromWeb3(web3);
+const getAccount = require("./getAccount").getAccount;
+
+async function awaitWrapper() {
+  let account = await getAccount();
+
+  // This account must have a CELO balance to pay tx fees
+  // get some testnet funds at https://celo.org/build/faucet
+  console.log(account.address);
+
+  //...
+}
+
+awaitWrapper();
+```
+
+The provided code will import the contract kit and connect to the remote node. It will look for a private key
+in the ./.secret file, and if it doesn't find one, it will generate a new one. Once it gets the key, it will
+print the associated account. This is the account that we will fund with the faucet.
+
+If you go to the [Alfajores Faucet Page](https://celo.org/build/faucet), you can faucet your account some
+CELO and see your balance increase.
+
+Then add your account to the kit with the private key:
+
+```javascript
+kit.connection.addAccount(account.privateKey); // this account must have a CELO balance to pay transaction fees
+```
+
+### Deploy the contract with Truffle
+
+Before you can use Truffle for the migration, you need to set up the proper configuration in
+./truffle-config.js. At the top of ./truffle-config.js, set up the kit by connecting to the test network and
+adding the account you just funded.
+
+```javascript
+const Web3 = require("web3");
+const ContractKit = require("@celo/contractkit");
+const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
+const kit = ContractKit.newKitFromWeb3(web3);
+const getAccount = require("./getAccount").getAccount;
+
+async function awaitWrapper() {
+  let account = await getAccount();
+  kit.addAccount(account.privateKey);
+}
+awaitWrapper();
+```
+
+Then, in the networks object, you can add the initialized kit provider to an alfajores property.
+
+```javascript
+      networks: {
+    test: {
+      host: "127.0.0.1",
+      port: 7545,
+      network_id: "*"
+    },
+    // CeloProvider & Alfajores network ID
+    alfajores: {
+      provider: kit.connection.web3.currentProvider,
+      network_id: 44787
+    }
+  }
+```
+
+Now, deploy the contracts to Alfajores with this command:
+
+```bash
+truffle migrate --network alfajores
+```
+
+### Custom Node.js Deployment
+
+In this section, you will deploy a contract using a simple Node.js script to show how you can do it without
+using Truffle.
+
+You need to compile the HelloWorld.sol contract using (if it isn't already):
+
+```bash
+truffle compile
+```
+
+This command will generate a HelloWorld.json file in the ./build/contracts/ directory. HelloWorld.json
+contains a lot of data about the contract, compiler and low level details. Import this file into the
+deployment script with:
+
+```javascript
+const HelloWorld = require('./build/contracts/HelloWorld.json')
+You are finally ready to deploy the contract. Use the kit to create a custom transaction that includes the contract bytecode:
+let tx = await kit.sendTransaction({
+    from: account.address,
+    data: HelloWorld.bytecode // from ./build/contracts/HelloWorld.json
+})
+
+```
+
+:::tip
+To deploy a contract on Celo, use the kit.sendTransaction() function without a to: field and the contract bytecode in the data field. The account that you are sending the transaction from must have enough CELO to pay the transaction fee, unless you specify another currency as the feeCurrency, then you need enough of that currency to pay the transaction fee.
+
+:::
+
+The entire deployment script is less than 20 lines of code.
+
+```javascript
+const Web3 = require("web3");
+const ContractKit = require("@celo/contractkit");
+const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
+const kit = ContractKit.newKitFromWeb3(web3);
+const getAccount = require("./getAccount").getAccount;
+const HelloWorld = require("./build/contracts/HelloWorld.json");
+
+async function awaitWrapper() {
+  let account = await getAccount();
+  console.log(account.address);
+
+  // this account must have a CELO balance to pay transaction fees
+  kit.connection.addAccount(account.privateKey);
+
+  let tx = await kit.connection.sendTransaction({
+    from: account.address,
+    data: HelloWorld.bytecode,
+  });
+
+  const receipt = await tx.waitReceipt();
+  console.log(receipt);
+}
+
+awaitWrapper();
+```
+
+Congratulations! You have deployed your first contract onto Celo! You can verify your contract deployment on
+[Blockscout](https://alfajores-blockscout.celo-testnet.org/). You can get the transaction hash from the
+receipt and look it up on the block explorer.
+
+### Interacting with Custom Contracts
+
+Now HelloWorld.sol is deployed onto the Alfajores testnet. How can you interact with the deployed contract
+using ContractKit? helloWorld.js includes some example code that shows how you can do this.
+
+There are 3 functions defined in helloWorld.js that accomplish this.
+The first function, initContract(), reads the deployed contract information from the Truffle artifact at
+HelloWorld.json. With this information, you can create a new web3.js Contract instance:
+
+```javascript
+async function initContract() {
+  // Check the Celo network ID
+  const networkId = await web3.eth.net.getId();
+
+  // Get the contract associated with the current network
+  const deployedNetwork = HelloWorld.networks[networkId];
+
+  // Create a new contract instance with the HelloWorld contract info
+  let instance = new web3.eth.Contract(
+    HelloWorld.abi,
+    deployedNetwork && deployedNetwork.address
+  );
+
+  getName(instance);
+  setName(instance, "hello world!");
+}
+```
+
+After creating the contract instance, the initContract() function calls getName() and setName().
+The getName() function will call, return and print the getName() function of the provided instance of the
+HelloWorld contract.
+
+```javascript
+async function getName(instance) {
+  let name = await instance.methods.getName().call();
+  console.log(name);
+}
+```
+
+The setName() function is a bit more involved. First, it gets the account key from the provided ./secret file,
+just like in celo_deploy.js. Then it creates a txObject that encodes a smart contract transaction call to
+setName() with the provided newName to the provided instance of the HelloWorld contract. Then the function
+sends the encoded transaction object to the network, waits for a reciept and prints it to the console.
+
+```javascript
+async function setName(instance, newName) {
+  let account = await getAccount();
+
+  // Add your account to ContractKit to sign transactions
+  // This account must have a CELO balance to pay tx fees, get some at https://celo.org/build/faucet
+  kit.connection.addAccount(account.privateKey);
+  const txObject = await instance.methods.setName(newName);
+  let tx = await kit.sendTransactionObject(txObject, { from: account.address });
+
+  let receipt = await tx.waitReceipt();
+  console.log(receipt);
+}
+```
+
+The above method shows a more detail about how to create custom deployment transactions and scripts than the previous method.
+As you can see, all the goodies from Ethereum apply to Celo, so virtually all tutorials and other content should be easily translatable to Celo.

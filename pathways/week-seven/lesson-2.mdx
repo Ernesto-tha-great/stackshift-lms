@@ -6,12 +6,12 @@ restriction: "YesDialog"
 publishedAt: "2023-02-01"
 ---
 
-## Part Three
+## Part Two
 
 <iframe
   width="850"
   height="400"
-  src="https://www.youtube.com/embed/VBedVdeHhZ8"
+  src="https://www.youtube.com/embed/DnBhqte2mZA"
   title="YouTube video player"
   frameborder="0"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -20,219 +20,382 @@ publishedAt: "2023-02-01"
 
 &nbsp;
 
-Congrats on reaching this section! You've learned about smart contracts, UI with Nextjs and Tailwind, testing, and contract verification in the past two tutorials.
-In this lesson, we will provide step-by-step instructions for setting up a subgraph that queries subscription
-details from the OpenZeplin Defender autotask script. This will help you better understand the process.
+Congratulations on making it to this section! You've already read about smart contracts and UI using Nextjs and
+Tailwind in the first part of our tutorial. Now, we'll delve deeper into writing and verifying the smart contract
+by providing step-by-step instructions in this article.
 
-### Prerequisites
+## Prerequisites
 
-- [Create](https://thegraph.com/en/) an account on the subgraph
-- Click on sign in with GitHub
-- Install the graph globally on your local machine using npm. In your terminal run
-
-In the project folder run:
-
-```bash
-yarn subgraphs:get-abi
-```
+To proceed, it's required that you finish the UI and smart contract
+[tutorial](https://hashnode.com/preview/631cd986f73f4734bc05524d), along with the associated unit tests.
+Further information on unit tests can be found [here.](https://www.guru99.com/unit-testing-guide.html)
 
 ### Step 1
 
-To initialize the graph in our project, cd into the subgraph package folder and run
+Navigate into your test folder and create a new file called `subscription-test.js`
+
+Head over to [Hardhat Network Helper](https://hardhat.org/hardhat-network-helpers/docs/overview) which gives you
+the ability to mine blocks up to a certain timestamp or block number. To install paste the below command into
+your terminal.
 
 ```bash
-graph init
+yarn add --dev @nomicfoundation/hardhat-network-helpers
 ```
 
-Choose Ethereum for protocol, and hosted services, and add your GitHub username as your subgraph name.
+Once the initial task is completed, we must organize our test cases in a way that simplifies identifying what
+needs to be tested and the expected results. Below are the test cases we will use for this project:
 
-Add celo-alfajores as the network, and you should see the output below if executed successfully.
+- Do we have three plans?
+- Is the first plan what we expect?
+- Is the third plan what we expect?
+- Is the second plan what we expect?
+- Can we subscribe to the right plan?
+- Can we subscribe to the wrong plan?
+- Can we subscribe to the same plan twice?
+- Can a user subscribe to a plan without enough allowance?
+- Can a user be charged 11 more times after the first charge?
+- Can a user subscribe to a plan without enough balance for the first charge?
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678226888850/597e9418-9fdf-423a-8650-79fd248ada45.png)
+To run the first step add the following code to your subscription-test.js file
 
-In our subgraph, a new folder called `ebook-payment-subscription-platform` has been created or in your own case
-whatever you named your folder name, Inside the folder, open the `schema.graphql` file and paste the following
-code inside.
+```javascript
+const { expect, assert } = require("chai");
+const { ethers } = require("hardhat");
+const helpers = require("@nomicfoundation/hardhat-network-helpers");
 
-```graphql
-type Plan @entity(immutable: true) {
-  id: Bytes!
-  plan: Int!
-  price: BigInt!
-  duration: BigInt!
-  subscriptions: [SubscriptionP!]! @derivedFrom(field: "plan")
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
+const oneHour = 60 * 60 * 1;
 
-type SubscriptionP @entity(immutable: true) {
-  id: Bytes!
-  subscriber: Bytes! # address
-  plan: Plan!
-  nextCharge: BigInt!
-  endDate: BigInt!
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
+before(async function () {
+  const [deployer, accountA, accountB, accountC] = await ethers.getSigners();
+  const MockCUSD = await ethers.getContractFactory("MockCUSD");
+  const cUSD = await MockCUSD.deploy();
+await cUSD.deployed();
+
+  const PaymentSubscription = await ethers.getContractFactory(
+    "PaymentSubscription"
+  );
+  const paymentSubscription = await PaymentSubscription.deploy(cUSD.address);
+
+  await paymentSubscription.deployed();
+
+  this.paymentSubscription = paymentSubscription;
+  this.cUSD = cUSD;
+  this.deployer = deployer;
+  this.accountA = accountA;
+  this.accountB = accountB;
+  this.accountC = accountC;
+});
+
+describe("PaymentSubscription", function () {
+  it("Should have Basic plan", async function () {
+    const basicPlan = await this.paymentSubscription.plans(0);
+    expect(basicPlan.price).to.equal(ethers.utils.parseEther("2"));
+    expect(basicPlan.duration).to.equal(oneHour);
+  });
 ```
 
-Then in your subgraph.yaml file delete the default code and paste the following code
+In your terminal, run this command:
 
-```yaml
-specVersion: 0.0.5
-schema:
-  file: ./schema.graphql
-dataSources:
-  - kind: ethereum
-    name: PaymentSubscription
-    network: celo-alfajores
-    source:
-      address: "0x95BD5b1B16C586025bF0750c21bd1de433de8D4c"
-      abi: PaymentSubscription
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Plan
-        - SubscriptionP
-      abis:
-        - name: PaymentSubscription
-          file: ./abis/PaymentSubscription.json
-      eventHandlers:
-        - event: PlanCreated(uint8,uint256,uint256)
-          handler: handlePlanCreated
-        - event: SubscriptionCancelled(indexed address)
-          handler: handleSubscriptionCancelled
-        - event: SubscriptionCharged(indexed address,uint8,uint256)
-          handler: handleSubscriptionCharged
-        - event: SubscriptionCreated(indexed address,uint8)
-          handler: handleSubscriptionCreated
-      file: ./src/payment-subscription.ts
+```bash
+ npx hardhat test test/subscription-test.js --network hardhat
 ```
+
+You should see the following result in your terminal
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678051597384/08b925db-17d9-488f-8451-cf687253abd4.png)
+
+Also, we need to try this for our premium plan and enterprise plan. In that same file add the following code
+
+```javascript
+it("Should have Premium plan", async function () {
+  const premiumPlan = await this.paymentSubscription.plans(1);
+  expect(premiumPlan.price).to.equal(ethers.utils.parseEther("5"));
+  expect(premiumPlan.duration).to.equal(oneHour);
+});
+
+it("Should have Enterprise plan", async function () {
+  const enterprisePlan = await this.paymentSubscription.plans(2);
+  expect(enterprisePlan.price).to.equal(ethers.utils.parseEther("12"));
+  expect(enterprisePlan.duration).to.equal(oneHour);
+});
+```
+
+and run the same command in your terminal. Your terminal should look like this if properly executed.
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678052443621/382c4bdc-925d-4d13-86c6-f182ef9dec59.png)
+
+### Step 2
+
+Also, we want a user to be able to subscribe to a 12-month plan. To do this, we need to add the following code
+after the enterprise plan function
+
+```javascript
+it("Should allow user to subscribe to a 12 months plan", async function () {
+    const basic = await this.paymentSubscription.plans(0);
+await this.cUSD.approve(
+      this.paymentSubscription.address,
+      basic.price.mul(ethers.BigNumber.from(12))
+    );
+await this.paymentSubscription.subscribe(basic.plan, 12);
+    const subscription = await this.paymentSubscription.subscriptions(
+      this.deployer.address
+    );
+```
+
+Your final code should look like this.
+
+```javascript
+ const { expect, assert } = require("chai");
+const { ethers } = require("hardhat");
+const helpers = require("@nomicfoundation/hardhat-network-helpers");
+
+const oneHour = 60 * 60 * 1;
+
+before(async function () {
+  const [deployer, accountA, accountB, accountC] = await ethers.getSigners();
+  const MockCUSD = await ethers.getContractFactory("MockCUSD");
+  const cUSD = await MockCUSD.deploy();
+await cUSD.deployed();
+
+  const PaymentSubscription = await ethers.getContractFactory(
+    "PaymentSubscription"
+  );
+  const paymentSubscription = await PaymentSubscription.deploy(cUSD.address);
+
+  await paymentSubscription.deployed();
+
+  this.paymentSubscription = paymentSubscription;
+  this.cUSD = cUSD;
+  this.deployer = deployer;
+  this.accountA = accountA;
+  this.accountB = accountB;
+  this.accountC = accountC;
+});
+
+describe("PaymentSubscription", function () {
+  it("Should have Basic plan", async function () {
+    const basicPlan = await this.paymentSubscription.plans(0);
+    expect(basicPlan.price).to.equal(ethers.utils.parseEther("2"));
+    expect(basicPlan.duration).to.equal(oneHour);
+  });
+
+it("Should allow user to subscribe to a 12 months plan", async function () {
+    const basic = await this.paymentSubscription.plans(0);
+await this.cUSD.approve(
+      this.paymentSubscription.address,
+      basic.price.mul(ethers.BigNumber.from(12))
+    );
+await this.paymentSubscription.subscribe(basic.plan, 12);
+const subscription = await this.paymentSubscription.subscriptions(
+      this.deployer.address
+    );
+```
+
+Run the same command in your terminal, and your terminal should give you the following output below:
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678053462266/6df5b636-2b8c-4b90-b1c9-f95de8629095.png)
+
+However, we need to confirm that the time a user subscribes is the actual current block time and that a user can
+subscribe to the wrong plan or the same plan twice. Paste the following code after the last function.
+
+```javascript
+const currentTime = (await ethers.provider.getBlock("latest")).timestamp;
+
+    expect(subscription.plan).to.equal(basic.plan);
+    expect(subscription.startDate).to.equal(ethers.BigNumber.from(currentTime));
+    expect(subscription.endDate).to.equal(
+      ethers.BigNumber.from(currentTime + 12 * oneHour)
+    );
+    expect(subscription.nextCharge).to.equal(
+      ethers.BigNumber.from(currentTime + oneHour)
+    );
+  });
+
+it("Should not allow user to subscribe to the wrong plan", async function () {
+    await expect(this.paymentSubscription.subscribe(3, 12)).to.be.rejectedWith(
+      Error
+    );
+  });
+
+  it("Should not allow user to subscribe to the same plan twice", async function () {
+    const basic = await this.paymentSubscription.plans(0);
+
+    await this.cUSD.approve(
+      this.paymentSubscription.address,
+      basic.price.mul(ethers.BigNumber.from(12))
+    );
+
+    expect(
+      this.paymentSubscription.subscribe(basic.plan, 12)
+    ).to.be.revertedWith("Already subscribed");
+  });
+```
+
+Run the same command in your terminal, and you should get the following results if executed correctly:
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678058189074/27729e83-121f-489e-b256-9eeedf8541f8.png)
+
+### Step 3
+
+Finally, we would also test to see if a user could subscribe to a plan without enough allowance, be charged 11
+more times after the first charge, and subscribe to a plan without enough balance for the first charge. Add the
+following code after your last test
+
+```javascript
+it("Should not allow user to subscribe to a plan without enough allowance", async function () {
+    const basic = await this.paymentSubscription.plans(0);
+
+    await expect(
+      this.paymentSubscription.connect(this.accountA).subscribe(basic.plan, 12)
+    ).to.be.revertedWith("Insufficient allowance");
+  });
+
+  it("Should not allow user to subscribe to a plan without enough balance for the first charge", async function () {
+    const basic = await this.paymentSubscription.plans(0);
+
+    await this.cUSD
+      .connect(this.accountA)
+      .approve(
+        this.paymentSubscription.address,
+        basic.price.mul(ethers.BigNumber.from(12))
+      );
+
+    await expect(
+      this.paymentSubscription.connect(this.accountA).subscribe(basic.plan, 12)
+    ).to.be.revertedWith("Insufficient balance");
+  });
+
+  it("Should allow user to be charged 11 more times after the first charge", async function () {
+    await this.cUSD.mint(this.accountC.address, ethers.utils.parseEther("24"));
+
+    const basic = await this.paymentSubscription.plans(0);
+
+    await this.cUSD
+      .connect(this.accountC)
+      .approve(
+        this.paymentSubscription.address,
+        basic.price.mul(ethers.BigNumber.from(12))
+      );
+
+    await this.paymentSubscription
+      .connect(this.accountC)
+      .subscribe(basic.plan, 12);
+
+    for (let monthsCharged = 2; monthsCharged <= 12; monthsCharged++) {
+      const currentBal = await this.cUSD.balanceOf(this.accountC.address);
+      const subscription = await this.paymentSubscription.subscriptions(
+        this.accountC.address
+      );
+
+      await helpers.time.increase(oneHour);
+
+      console.table({
+        monthsCharged,
+        currentBal: ethers.utils.formatEther(currentBal),
+        nextCharge: ethers.utils.formatEther(subscription.nextCharge),
+      });
+
+      await this.paymentSubscription
+        .connect(this.deployer)
+        .charge(this.accountC.address);
+    }
+
+    expect(await this.cUSD.balanceOf(this.accountC.address)).to.equal(0);
+
+    const subscription = await this.paymentSubscription.subscriptions(
+      this.accountC.address
+    );
+    const active = await this.paymentSubscription.activeSubscriptions(
+      this.accountC.address
+    );
+
+    expect(subscription.nextCharge).to.equal(0);
+    expect(active).to.equal(false);
+  });
+});
+```
+
+Run the same command in your terminal, and you should get the following results if executed correctly:
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678096813584/c2a4dba3-8f44-45b6-b233-503fdd696089.png)
+
+Awesome! We now have all our tests working, and the next thing we need to do is verify our contract and run a
+test coverage. To do this head over to [solidity coverage](https://www.npmjs.com/package/solidity-coverage) and
+run the command below in your terminal
+
+```bash
+yarn add solidity-coverage --dev
+```
+
+**Require** the plugin in `hardhat.config.js` by pasting this code
+
+```javascript
+require("solidity-coverage");
+```
+
+In your terminal run,
+
+```bash
+npx hardhat coverage --testfiles "test/registry/*.ts" --network hardhat
+```
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678100392588/633e5a1f-0eac-4930-8e4a-ab28e09159c3.png)
+
+To verify your contract,
+
+- Head over to [Celoscan](https://celoscan.io/)
+- Login or Signup
+- Click on the API-KEYs menu on the sidebar and generate a key
+- Paste the key in the space available for it in the `.env` file
+
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678100705430/1a47fdab-dad4-47a3-a4ae-826dbf4211e9.png)
 
 In your terminal run
 
 ```bash
-graph codegen
+npx hardhat deploy --network alfajores
 ```
 
-You should see the following output
+To deploy, open up `deploy.js` file in the deploy folder and paste the following code inside
 
-![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678273533383/249cd13c-c2e4-4f9b-a134-ce23fb6e8baf.png)
+```javascript
+module.exports = async ({ getNamedAccounts, deployments }) => {
+  const { deploy } = deployments;
+  const { deployer } = await getNamedAccounts();
 
-Lets proceed to doing dome cleanups in our file , navigate to the src folder and open `paymentsubscription.ts`
-file, delete the default code and paste the following
+  const cUSD = await deploy("MockCUSD", {
+    from: deployer,
+    log: true,
+  });
 
-```typescript
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import {
-  PlanCreated as PlanCreatedEvent,
-  SubscriptionCancelled as SubscriptionCancelledEvent,
-  SubscriptionCharged as SubscriptionChargedEvent,
-  SubscriptionCreated as SubscriptionCreatedEvent,
-  PaymentSubscription as PaymentSubscriptionContract,
-  PaymentSubscription__subscriptionsResult,
-} from "../generated/PaymentSubscription/PaymentSubscription";
-import { Plan, SubscriptionP as Subscription } from "../generated/schema";
+  console.log("cUSD deployed to:", cUSD.address);
 
-export function handlePlanCreated(event: PlanCreatedEvent): void {
-  let entity = new Plan(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  await deploy("PaymentSubscription", {
+    from: deployer,
+    args: [cUSD.address],
+    log: true,
+  });
+};
 
-  entity.plan = event.params.plan;
-  entity.price = event.params.price;
-  entity.duration = event.params.duration;
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-}
-
-export function handleSubscriptionCancelled(
-  event: SubscriptionCancelledEvent
-): void {
-  let entity = Subscription.load(event.params.subscriber);
-
-  if (entity == null) {
-    return;
-  }
-
-  entity.nextCharge = BigInt.fromI32(0);
-  entity.endDate = BigInt.fromI32(0);
-
-  entity.save();
-}
-
-export function handleSubscriptionCharged(
-  event: SubscriptionChargedEvent
-): void {
-  let entity = Subscription.load(event.params.subscriber);
-
-  if (entity == null) {
-    entity = new Subscription(event.params.subscriber);
-
-    let paymentSubscriptionContract = PaymentSubscriptionContract.bind(
-      event.address
-    );
-    let subscription = paymentSubscriptionContract.subscriptions(
-      event.params.subscriber
-    );
-
-    entity.plan = Bytes.fromI32(subscription.getPlan());
-    entity.subscriber = event.params.subscriber;
-    entity.endDate = subscription.getEndDate();
-  }
-
-  entity.nextCharge = event.params.nextCharge;
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-}
-
-export function handleSubscriptionCreated(
-  event: SubscriptionCreatedEvent
-): void {
-  let entity = new Subscription(event.params.subscriber);
-
-  entity.subscriber = event.params.subscriber;
-
-  let paymentSubscriptionContract = PaymentSubscriptionContract.bind(
-    event.address
-  );
-  let subscription = paymentSubscriptionContract.subscriptions(
-    event.params.subscriber
-  );
-
-  entity.plan = Bytes.fromI32(subscription.getPlan());
-  entity.endDate = subscription.getEndDate();
-  entity.nextCharge = subscription.getNextCharge();
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-}
+module.exports.tags = ["MockCUSD"];
 ```
 
-### Step 2
-
-The next action is to upload our subgraph, Head over to your dashboard and create a subgraph.
-
-in your terminal run
+In your terminal, run
 
 ```bash
-graph auth --product hosted-service<the number generated for you>
-graph deploy --product hosted-service<yourname-subgraphname>
+yarn run deploy
 ```
 
-You have successfully setup subgraph to query subscription details from openzepplin defender
+![](https://cdn.hashnode.com/res/hashnode/image/upload/v1678104236910/f4ebeb47-47e5-48ff-83ee-6bf08aabcc74.png)
+
+And to verify our contracts we need to use the format below.
+
+```bash
+npx hardhat verify <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS> --network alfajores
+```
+
+To verify our subscription payment smart contract that was deployed above, the command to run will be:
+
+```bash
+npx hardhat hardhat verify 0x95BD5b1B16C586025bF0750c21bd1de433de8D4c 0xEb3345B25d59Ad1dD153DAf883b377258E8515F9 --network alfajores
+```
