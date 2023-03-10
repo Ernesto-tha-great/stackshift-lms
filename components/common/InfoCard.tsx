@@ -33,8 +33,8 @@ const InfoCard: React.FC<Props> = ({ data }: Props) => {
               {data.sub}
             </h4> */}
             <p className="paragraph text-sm xl:text-base text-black font-noto">
-              {data.desc.length > 200
-                ? data.desc.slice(0, 200) + "..."
+              {data.desc.length > 150
+                ? data.desc.slice(0, 150) + "..."
                 : data.desc}
             </p>
           </div>

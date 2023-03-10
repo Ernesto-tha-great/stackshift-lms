@@ -56,6 +56,7 @@ function Pathway({ allLessons, pathway }: Props) {
       res = await res.json();
       getCompletedLessonPercentage(res);
       setPathwayFBData(res);
+      console.log(res);
     };
     pathwayApiCall();
   }, [address, slug]);
