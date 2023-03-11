@@ -40,7 +40,7 @@ Ethereum or Celo software. It helps developers manage and automate the recurring
 the process of building smart contracts and dApps, as well as easily introducing more functionality around
 this workflow. This means compiling, running, and testing smart contracts at the very core.
 
-![image](images/1.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*6bO0ib5Z5Ya1xx6vpz_2Iw.png)
 
 :::tip
 
@@ -55,7 +55,7 @@ Before getting started you’ll need to set up Celo in your local environment. Y
 - [Using Windows](https://docs.celo.org/developer-guide/start/develop-on-windows)
 - [Using Mac](https://docs.celo.org/developer-resources/using-mac)
 
-![image](images/2.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*gMN4z9vOAxivKDpnFC-cFQ.png)
 
 Celo projects include common dependencies like `Nodejs`, `npm`, `nvm`, `yarn`, `git`, and `xCode`. If you already have these installed you can follow this post to set up Celo specific dependencies.
 
@@ -63,23 +63,17 @@ Celo projects include common dependencies like `Nodejs`, `npm`, `nvm`, `yarn`, `
 
 The celocli lets you interact with the Celo Protocol smart contracts.
 
-```
+```bash
 npm install -g @celo/celocli
 ```
 
-![image](images/3.png)
-
-:::tip
-
-Learn more: [17 smart contracts powering the Celo protocol](https://joenyzio.medium.com/17-powerful-celo-protocol-core-contracts-you-need-to-know-d84c1fbc5a6)
-
-:::
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*Dws-_JyHCyBKVVHTw5COyw.png)
 
 ## Install Ganache (optional)
 
 [Ganache UI](https://next-stack.github.io/ganache/) creates a local blockchain to help you deploy and test contracts. You can install and set up the UI from their website and can find more details in the [Ganache docs](https://trufflesuite.com/docs/ganache/overview.html).
 
-![image](images/4.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*z9eiaxJZdbjwV-IX5bDguA.png)
 
 :::tip
 
@@ -89,7 +83,7 @@ The [@celo/ganache-cli](https://github.com/celo-org/ganache-cli) is Celo’s ver
 
 From the Ganache UI, create a new workspace on `localhost:7545`.
 
-![image](images/5.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*rqkGzVcwZR1ofiS2uW1TXQ.png)
 
 ## ✅ Step 2: Project setup
 
@@ -99,7 +93,7 @@ Now that you have your environment setup, you’re ready to create your project!
 mkdir celo-hardhat && cd celo-hardhat
 ```
 
-![image](images/6.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*blWtAuJvQMTSHdXk97Xj3w.png)
 
 ### Initialize an npm project
 
@@ -109,7 +103,7 @@ Initialize an npm project from within the project directory.
 npm init -y
 ```
 
-![image](images/7.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*ejQNFqLZ_jqOk9_OrOxrnA.png)
 
 ### Install dotenv
 
@@ -119,7 +113,7 @@ npm init -y
 npm install dotenv
 ```
 
-![image](images/8.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*p7BXgaKISEXGg8GJyERzYw.png)
 
 ### Initialize hardhat
 
@@ -135,7 +129,7 @@ or
 npx hardhat
 ```
 
-![image](images/9.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*8ylm4OJmsTp77yEJWfr7CQ.png)
 
 :::tip
 
@@ -147,7 +141,7 @@ Learn more: Follow the [installation instructions and quickstart](https://hardha
 
 After initializing hardhat have the chance to customize your project settings. In this post, we’ll Create a basic sample project and accept all of the default settings.
 
-![image](images/10.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*TjsLgH2oOPPGZmS-3H3ivA.png)
 
 ### Open your project
 
@@ -157,7 +151,7 @@ Your project is set up and you’re ready to start building! Open your project i
 code .
 ```
 
-![image](images/11.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*yP7wk9hoT4BLSoCt-rG4-w.png)
 
 :::tip
 
@@ -181,7 +175,7 @@ contract HelloCelo {
 }
 ```
 
-![image](images/12.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*7xKUeShYe2DUqkjPEeHxkw.png)
 
 :::tip
 
@@ -199,7 +193,7 @@ Hardhat also provides a `sample-script.js` file in the `/scripts` folder that yo
 npx hardhat run scripts/sample-script.js
 ```
 
-![image](images/13.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*1YofNVspeofZFY83DE_q2A.png)
 
 To deploy the `HelloCelo.sol` contract you created, you’ll need to update the `sample-script.js` file to include the new smart contract information. To do this, replace lines 17–22 with the code below.
 
@@ -210,7 +204,7 @@ await helloCelo.deployed();
 console.log("HelloCelo deployed to:", helloCelo.address);
 ```
 
-![image](images/14.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*hAp9rOC1m4diXpAwACu87g.png)
 
 :::tip
 
@@ -226,7 +220,7 @@ You can now re-run `sample-script.js` to deploy the `HelloCelo.sol` contract.
 npx hardhat run scripts/sample-script.js
 ```
 
-![image](images/15.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*l6fD3r17eC5gw4NrWR30uw.png)
 
 ### ✅ Step 4: Create and fund your account
 
@@ -236,23 +230,17 @@ To deploy to the test or main Celo networks, you’ll need an account that is fu
 
 If you don’t already have an account you would like to use, you can run celocli account:newfrom your terminal to create one for this project.
 
-```
+```bash
 celocli account:new
 ```
 
-![image](images/16.png)
-
-:::tip
-
-Learn more: [Celo CLI: A practical guide to energize your Celo toolkit](https://joenyzio.medium.com/celo-cli-a-practical-guide-to-energize-your-celo-toolkit-9253067fff3a)
-
-:::
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*-v7rfIYaFY_KhdjIojVebA.png)
 
 ### Fund your account
 
 The [Alfajores testnet faucet](https://faucet.celo.org) helps you fund your account with test tokens. Copy your address from the terminal and paste it into the site to fund your account. This should send you tokens within a few seconds.
 
-![image](images/17.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*z32hWeC23i2fiBxySYvLcg.png)
 
 ### Check account balance
 
@@ -262,7 +250,7 @@ If you’d like to check your new account balance, you can use celocli to make s
 celocli account:balance 0xYOURADDRESS
 ```
 
-![image](images/18.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*AR6A87KsonBIQc2X0Txo7g.png)
 
 ### Create .env file
 
@@ -273,7 +261,7 @@ PRIVATE_KEY =
   "5ead931ce4812310e31f84c471945b96a13098aa6dc8cf0d3f6f451a5dea56cc";
 ```
 
-![image](images/19.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*Q_hNMp3YtIKwRn91Wcb2Wg.png)
 
 :::tip
 
@@ -371,7 +359,7 @@ Now that you deployed your contract, you can view it in the Celo block explorer 
 - Navigate to [BlockScout](https://explorer.celo.org/) and select the network of your deployed contract.
 - Paste your contract address from the terminal window and search for it in BlockExplorer.
 
-![image](images/20.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/0*DdwqMd4EaG_RcguQ.png)
 
 :::tip
 
@@ -388,11 +376,11 @@ For people to use and interact with your contract, they’ll want to be able to 
 Navigate to the `Code` tab on the `Explorer` page for your contract’s address
 Click `Verify & Publish` to enter the smart contract verification page
 
-![image](images/21.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/0*2L7QMv94Ncov9V5G.png)
 
 - Upload your smart contract (example: `HelloCelo.sol`) and its `.json` file (example: `HelloCelo.json`) found in `build > contracts folder`.
 
-![image](images/22.png)
+![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/0*bq9tzn8SL57Rqh6p.png)
 
 - Click `Verify & Publish`
 - Navigate to the `Contract Address Details` Page in the block explorer to, use the Code, Read Contract, and Write Contract panels to view and interact with your deployed smart contract.

@@ -10,7 +10,7 @@ import week8 from "../public/images/Templates/week1.png";
 export const pathways = [
   {
     key: "week-one",
-    name: "Week one: Introduction ",
+    name: "Week one ",
     url: "/pathway/week-one",
     image: week1,
     desc: "An introduction to Celo blockchain, Celo CLI and Celo composer. ",
@@ -18,7 +18,7 @@ export const pathways = [
   },
   {
     key: "week-two",
-    name: "Getting started with Celo composer",
+    name: "Week Two",
     url: "/pathway/week-two",
     image: week2,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
@@ -26,7 +26,7 @@ export const pathways = [
   },
   {
     key: "week-three",
-    name: "NFTs",
+    name: "Week Three",
     url: "/pathway/week-three",
     image: week3,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
@@ -34,7 +34,7 @@ export const pathways = [
   },
   {
     key: "week-four",
-    name: "Oracles",
+    name: "Week Four",
     url: "/pathway/week-four",
     image: week4,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
@@ -42,7 +42,7 @@ export const pathways = [
   },
   {
     key: "week-five",
-    name: "ReFi",
+    name: "Week Five",
     url: "/pathway/week-five",
     image: week5,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
@@ -50,7 +50,7 @@ export const pathways = [
   },
   {
     key: "week-six",
-    name: "DAOs",
+    name: "Week Six",
     url: "/pathway/week-six",
     image: week6,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
@@ -58,7 +58,7 @@ export const pathways = [
   },
   {
     key: "week-seven",
-    name: "Subgraphs",
+    name: "Week Seven",
     url: "/pathway/week-seven",
     image: week7,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
@@ -66,7 +66,7 @@ export const pathways = [
   },
   {
     key: "week-eight",
-    name: "ODIS | Social payments",
+    name: "Week Eight",
     url: "/pathway/week-eight",
     image: week8,
     desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",

@@ -41,32 +41,32 @@ function Pathway({ allLessons, pathway }: Props) {
   const [pathwayFBData, setPathwayFBData] = useState<any>(null);
   const [completedPercentage, setCompletedPercentage] = useState(0);
 
-  useEffect(() => {
-    const pathwayApiCall = async () => {
-      var res = await fetch("/api/pathway", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          address: address,
-          pathway: slug,
-        }),
-      });
-      res = await res.json();
-      getCompletedLessonPercentage(res);
-      setPathwayFBData(res);
-      console.log(res);
-    };
-    pathwayApiCall();
-  }, [address, slug]);
+  // useEffect(() => {
+  //   const pathwayApiCall = async () => {
+  //     var res = await fetch("/api/pathway", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         address: address,
+  //         pathway: slug,
+  //       }),
+  //     });
+  //     res = await res.json();
+  //     getCompletedLessonPercentage(res);
+  //     setPathwayFBData(res);
+  //     console.log(res);
+  //   };
+  //   pathwayApiCall();
+  // }, [address, slug]);
 
-  const getCompletedLessonPercentage = (data: any) => {
-    const totalLessons = allLessons.length;
-    const lastCompletedLesson = Number(data.lastCompletedLesson) + 1;
-    const percentage = (lastCompletedLesson / totalLessons) * 100;
-    setCompletedPercentage(Math.round(percentage));
-  };
+  // const getCompletedLessonPercentage = (data: any) => {
+  //   const totalLessons = allLessons.length;
+  //   const lastCompletedLesson = Number(data.lastCompletedLesson) + 1;
+  //   const percentage = (lastCompletedLesson / totalLessons) * 100;
+  //   setCompletedPercentage(Math.round(percentage));
+  // };
 
   return (
     <>
@@ -103,22 +103,21 @@ function Pathway({ allLessons, pathway }: Props) {
           </section>
           <section className="mt-10">
             <h1 className="text-3xl font-noto mb-8">Pathway Structure</h1>
-            {pathwayFBData &&
-              allLessons.map((lesson) => {
-                return (
-                  <LessonItem
-                    key={lesson.slug}
-                    lesson={lesson}
-                    lessonNumber={lesson.lesson}
-                    slug={slug}
-                    lastCompletedLesson={
-                      pathwayFBData && pathwayFBData.lastCompletedLesson
-                        ? pathwayFBData.lastCompletedLesson
-                        : "0"
-                    }
-                  />
-                );
-              })}
+            {allLessons.map((lesson) => {
+              return (
+                <LessonItem
+                  key={lesson.slug}
+                  lesson={lesson}
+                  lessonNumber={lesson.lesson}
+                  slug={slug}
+                  lastCompletedLesson={
+                    pathwayFBData && pathwayFBData.lastCompletedLesson
+                      ? pathwayFBData.lastCompletedLesson
+                      : "0"
+                  }
+                />
+              );
+            })}
           </section>
         </div>
       </section>
