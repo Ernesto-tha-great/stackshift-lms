@@ -1,11 +1,11 @@
 import week1 from "../public/images/Templates/week1.png";
-import week2 from "../public/images/Templates/week1.png";
-import week3 from "../public/images/Templates/week1.png";
-import week4 from "../public/images/Templates/week1.png";
-import week5 from "../public/images/Templates/week1.png";
-import week6 from "../public/images/Templates/week1.png";
-import week7 from "../public/images/Templates/week1.png";
-import week8 from "../public/images/Templates/week1.png";
+import week2 from "../public/images/Templates/week2.png";
+import week3 from "../public/images/Templates/week3.png";
+import week4 from "../public/images/Templates/week4.png";
+import week5 from "../public/images/Templates/week5.png";
+import week6 from "../public/images/Templates/week6.png";
+import week7 from "../public/images/Templates/week7.png";
+import week8 from "../public/images/Templates/week8.png";
 
 export const pathways = [
   {
@@ -21,7 +21,7 @@ export const pathways = [
     name: "Week Two",
     url: "/pathway/week-two",
     image: week2,
-    desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
+    desc: "Get started with Celo smart contracts and learn how to deploy them on the Celo blockchain. Intrtoduction to Celo Composer",
     tags: ["react", "celo", "web3"],
   },
   {
@@ -29,7 +29,7 @@ export const pathways = [
     name: "Week Three",
     url: "/pathway/week-three",
     image: week3,
-    desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
+    desc: "Creating, minting and deploying your NFTs on Celo blockchain.",
     tags: ["react", "celo", "web3"],
   },
   {
@@ -37,7 +37,7 @@ export const pathways = [
     name: "Week Four",
     url: "/pathway/week-four",
     image: week4,
-    desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
+    desc: "Building defi apps using Redstone oracles and Celo. ",
     tags: ["react", "celo", "web3"],
   },
   {
@@ -45,7 +45,7 @@ export const pathways = [
     name: "Week Five",
     url: "/pathway/week-five",
     image: week5,
-    desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
+    desc: "Building ReFi dapps to offset carbon emissions.",
     tags: ["react", "celo", "web3"],
   },
   {
@@ -53,7 +53,7 @@ export const pathways = [
     name: "Week Six",
     url: "/pathway/week-six",
     image: week6,
-    desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
+    desc: "Building Decentralized Autonomous Organizations on the Celo blockchain.",
     tags: ["react", "celo", "web3"],
   },
   {
@@ -61,7 +61,7 @@ export const pathways = [
     name: "Week Seven",
     url: "/pathway/week-seven",
     image: week7,
-    desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
+    desc: "Creating and querying subgraphs on Celo blockchain.",
     tags: ["react", "celo", "web3"],
   },
   {
@@ -69,7 +69,7 @@ export const pathways = [
     name: "Week Eight",
     url: "/pathway/week-eight",
     image: week8,
-    desc: "React Pathway for Web3 is a framework for creating decentralized applications (dApps) on the web using the popular React JavaScript library. It provides a smooth integration of Web3 technologies and the powerful component-based UI development capabilities of React.",
+    desc: "Building social payments dApps on Celo blockchain. Mapping phone numbers to Celo addresses.",
     tags: ["react", "celo", "web3"],
   },
 ];
@@ -77,12 +77,13 @@ export const pathways = [
 export const infoCardData = [
   {
     key: "celo sage",
-    title: "Announcing Celo Sage",
+    title: "Celo Sage",
     sub: " Create, earn, and grow as a Celo content creator",
     desc: " Celo Sages are Celo community members who are passionate about expanding Celo mission of prosperity for all. They are developers, educators and content creators interested in creating and sharing technical content with the Celo community.",
     missionDesc:
       "Write blogs, documentation, videos, or designs to help developers build on Celo. Receive bounties (Up to 500 cUSD) from your work, learn and earn for your contributions to the ecosystem.",
     image: "/website-images/announcing-celo-academy.png",
+    url: "https://docs.celo.org/community/celo-sage",
   },
   {
     key: "Celo Camp",
@@ -92,6 +93,7 @@ export const infoCardData = [
     missionDesc:
       "Develop as an entrepreneur and learn how to launch and scale a project by leaders in crypto. Receive funding to build your project and get access to a global network of mentors and investors.",
     image: "/website-images/announcing-celo-academy.png",
+    url: "https://www.celocamp.com/",
   },
   {
     key: "celo alumni",
@@ -101,6 +103,7 @@ export const infoCardData = [
     missionDesc:
       "Our Alumni Program is designed specifically for entrepreneurs like you, offering a variety of resources to help you grow your business. From networking events with industry leaders, to mentorship opportunities and project showcase, our program will give you the tools you need to take your business to the next level.",
     image: "/website-images/announcing-celo-academy.png",
+    url: "https://celoalumni.notion.site/Celo-Alumni-4a23be9b3ec34a72a8c1cebc3d3f3b80",
   },
   {
     key: "celo docs",
@@ -110,14 +113,16 @@ export const infoCardData = [
     missionDesc:
       "Our mission is to empower developers like you with the knowledge and skills necessary to build dApps on multiple frameworks, including Celo, Ethereum, and more. Whether you&apos;re a beginner or an experienced developer, we have the resources you need to succeed.",
     image: "/website-images/announcing-celo-academy.png",
+    url: "https://docs.celo.org/",
   },
   {
     key: "academy tools",
-    title: "Announcing Academy Tools",
+    title: "Academy Tools",
     sub: " A Place to learn Web3 hands-on",
     desc: " Welcome to Celo Academy, the premier platform for web3 developers to learn about the exciting world of decentralized applications (dApps)",
     missionDesc:
       "Coming soon, Celo Academy will be the premier platform for web3 developers to learn about the exciting world of decentralized applications (dApps).",
     image: "/website-images/announcing-celo-academy.png",
+    url: "/",
   },
 ];

@@ -4,7 +4,6 @@ import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
 import { DataStore } from "@aws-amplify/datastore";
 import { Auth } from "aws-amplify";
-import { useUser } from "@/context/userContext";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -28,16 +27,10 @@ export default function SignUp() {
     setHasMounted(true);
   }, []);
 
-  // useEffect(() => {
-  //   if (user != null && user.name) {
-  //     router.push("/pathways");
-  //   }
-  // }, [router, user]);
-
   const signup = async () => {
     setLoading(true);
     try {
-      if (email === "" || name === "" || country === "") {
+      if (email === "" || name === "" || country === "" || password === "") {
         alert("Please fill all the fields");
         return;
       }
@@ -146,6 +139,17 @@ export default function SignUp() {
                   Sign up
                 </button>
               )}
+            </div>
+            <div className="mt-4 flex justify-between items-center ">
+              <h3 className="text-xl font-medium">
+                If you already have an account{" "}
+              </h3>
+              <button
+                className="button-signup"
+                onClick={() => router.push("/Login")}
+              >
+                Login
+              </button>
             </div>
           </div>
           <div className="w-1/2">

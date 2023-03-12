@@ -2,7 +2,6 @@
 /* eslint-disable @next/next/no-img-element */
 import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
-import { User } from "@/src/models";
 import { DataStore } from "@aws-amplify/datastore";
 import { Auth } from "aws-amplify";
 import Head from "next/head";
@@ -32,14 +31,6 @@ export default function Login() {
 
         const currentUser = await Auth.currentUserInfo();
         console.log(currentUser);
-        await DataStore.save(
-          new User({
-            email: username,
-            name: router.query.name?.toString(),
-            country: router.query.country?.toString(),
-            address: router.query.address?.toString(),
-          })
-        );
         router.push("/Home");
       } catch (err: any) {
         alert(err);
@@ -112,6 +103,17 @@ export default function Login() {
                   Log In
                 </button>
               )}
+            </div>
+            <div className="mt-4 flex justify-between items-center ">
+              <h3 className="text-xl font-medium">
+                If you dont have an account{" "}
+              </h3>
+              <button
+                className="button-signup"
+                onClick={() => router.push("/signup")}
+              >
+                Sign Up
+              </button>
             </div>
           </div>
           <div className="w-1/2">

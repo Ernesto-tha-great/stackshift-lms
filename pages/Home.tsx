@@ -123,16 +123,6 @@ export default function Home() {
             ;
           </div>
 
-          {/* Show two cards in one line using grid */}
-          {/* <section>
-           
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-0 lg:gap-5 px-5 lg:px-0">
-              {pathways.map((data) => (
-                <PathwayCard key={data.key} data={data} />
-              ))}
-            </div>
-          </section> */}
-
           {/* <!-- Industry-leading security section --> */}
           <section className="w-full my-24">
             <div className="relative max-w-screen-xl px-8 mx-auto flex flex-row-reverse items-center">
@@ -147,7 +137,8 @@ export default function Home() {
               </div>
               <div className="w-1/2 lg:col-span-5 space-y-8 sm:space-y-6 mt-8 xl:px-8">
                 <h2 className="text-4xl font-semibold text-black font-noto">
-                  We offer courses and resources to stay current on web3.
+                  We offer courses and resources to stay current on building on
+                  Celo.
                 </h2>
                 <ul className="space-y-8 sm:space-y-4 text-lg">
                   <p className="leading-relaxed text-black font-noto">

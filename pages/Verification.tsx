@@ -4,7 +4,7 @@ import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
 import { DataStore } from "@aws-amplify/datastore";
 import { Auth } from "aws-amplify";
-import { useUser } from "@/context/userContext";
+import { User } from "@/src/models";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -35,6 +35,15 @@ export default function Verification() {
           verificationCode
         );
         console.log("newhhh", "success");
+        await DataStore.save(
+          new User({
+            email: router.query.email?.toString(),
+            name: router.query.name?.toString(),
+            country: router.query.country?.toString(),
+            address: router.query.address?.toString(),
+          })
+        );
+        console.log("newhhh", "success2");
         router.push({
           pathname: "/Login",
           query: {

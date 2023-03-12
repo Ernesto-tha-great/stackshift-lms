@@ -25,8 +25,6 @@ function PathwayCard({ data }: Props) {
       <Link href={data.url}>
         <Img
           src={data.image}
-          // width={450}
-          // height={850}
           className="rounded-t-2xl w-full object-cover"
           alt="Flutter Pathway - Celo Academy"
         />
@@ -39,13 +37,13 @@ function PathwayCard({ data }: Props) {
           {data.desc}
         </p>
       </div>
-      <div className="px-6 flex flex-row flex-wrap">
+      {/* <div className="px-6 flex flex-row flex-wrap">
         {data.tags.map((tag) => (
           <div key={tag} className="p-1 text-black rounded-full text-lg">
             #{tag}
           </div>
         ))}
-      </div>
+      </div> */}
       <div className="px-6 pb-6 h-20 mt-3">
         <div
           onClick={(e) => {
