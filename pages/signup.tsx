@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
-import { DataStore } from "@aws-amplify/datastore";
+import { whitelistedEmails } from "@/constants/pathways";
 import { Auth } from "aws-amplify";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -34,30 +34,33 @@ export default function SignUp() {
         alert("Please fill all the fields");
         return;
       }
-
-      try {
-        const { user } = await Auth.signUp({
-          username: email,
-          password: password,
-          attributes: {
-            email: email,
-          },
-          autoSignIn: {
-            enabled: true,
-          },
-        });
-        console.log(user);
-        router.push({
-          pathname: "/Verification",
-          query: {
-            email: email,
-            name: name,
-            country: country,
-            address: address,
-          },
-        });
-      } catch (error) {
-        alert(error);
+      if (whitelistedEmails.includes(email)) {
+        try {
+          const { user } = await Auth.signUp({
+            username: email,
+            password: password,
+            attributes: {
+              email: email,
+            },
+            autoSignIn: {
+              enabled: true,
+            },
+          });
+          console.log(user);
+          router.push({
+            pathname: "/Verification",
+            query: {
+              email: email,
+              name: name,
+              country: country,
+              address: address,
+            },
+          });
+        } catch (error) {
+          alert(error);
+        }
+      } else {
+        alert("Your email is not whitelisted for this cohort!");
       }
     } finally {
       setLoading(false);
