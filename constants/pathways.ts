@@ -1,11 +1,11 @@
-import week1 from "../public/images/Stackshift/week1.png";
-import week2 from "../public/images/Stackshift/week2.png";
-import week3 from "../public/images/Stackshift/week3.png";
-import week4 from "../public/images/Stackshift/week4.png";
-import week5 from "../public/images/Stackshift/week5.png";
-import week6 from "../public/images/Stackshift/week6.png";
-import week7 from "../public/images/Stackshift/week7.png";
-import week8 from "../public/images/Stackshift/week8.png";
+import week1 from "../public/images/stackShift/week1.png";
+import week2 from "../public/images/stackShift/week2.png";
+import week3 from "../public/images/stackShift/week3.png";
+import week4 from "../public/images/stackShift/week4.png";
+import week5 from "../public/images/stackShift/week5.png";
+import week6 from "../public/images/stackShift/week6.png";
+import week7 from "../public/images/stackShift/week7.png";
+import week8 from "../public/images/stackShift/week8.png";
 
 export const pathways = [
   {
