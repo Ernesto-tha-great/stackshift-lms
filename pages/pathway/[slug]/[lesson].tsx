@@ -1,13 +1,10 @@
 import AddressDialog from "@/components/addressDialog";
-import Loading from "@/components/common/Loading";
 import CompletionDialog from "@/components/CompletionDialog";
-import YouTube from "@/components/CustomVideo";
 import ImageDialog from "@/components/imageDialog";
 import LessonSidebarItem from "@/components/LessonSidebarItem";
 import QuizDialog from "@/components/quizDialog";
 import YesDialog from "@/components/yesDialog";
 import { pathways } from "@/constants/pathways";
-import { useUser } from "@/context/userContext";
 import { getAllPathways, getPathwayFromSlug } from "@/utils/mdx";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
@@ -19,7 +16,6 @@ import Prism from "prismjs";
 import "prismjs/components/prism-dart";
 import "prismjs/components/prism-solidity";
 import { useEffect, useState } from "react";
-import ReactCustomizableProgressbar from "react-customizable-progressbar";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeCodeTitles from "rehype-code-titles";
 import rehypeSlug from "rehype-slug";
@@ -50,21 +46,22 @@ const Lesson = ({ pathway, allLessons, mdxSource, frontmatter }: Props) => {
   const onSuccessfulCompletion = async () => {
     setLoading(true);
     try {
-      var res = await fetch("/api/lesson-completed", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          address: address,
-          pathway: slug,
-          lessonCompleted: currentLesson,
-        }),
-      });
-      var decodedRes = await res.json();
-      if (decodedRes["success"] == true) {
-        router.push(`/pathway/${slug}/lesson-${Number(currentLesson) + 1}`);
-      }
+      // var res = await fetch("/api/lesson-completed", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     address: address,
+      //     pathway: slug,
+      //     lessonCompleted: currentLesson,
+      //   }),
+      // });
+      // var decodedRes = await res.json();
+      // if (decodedRes["success"] == true) {
+      //   router.push(`/pathway/${slug}/lesson-${Number(currentLesson) + 1}`);
+      // }
+      router.push(`/pathway/${slug}/lesson-${Number(currentLesson) + 1}`);
     } finally {
       setLoading(false);
     }

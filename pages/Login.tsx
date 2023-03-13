@@ -1,27 +1,43 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
+import { ErrorModal } from "@/components/common/ErrorModal";
 import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
 import { Auth } from "aws-amplify";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 export default function Login() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const [loading, setLoading] = useState(false);
 
   const { address, isDisconnected } = useAccount();
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        handleCloseError();
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  const handleCloseError = () => {
+    setError("");
+  };
+
   const login = async () => {
     setLoading(true);
     try {
       if (username === "" || password === "") {
-        alert("Please fill all the fields");
+        setError("Please fill all the fields");
         return;
       }
 
@@ -32,7 +48,7 @@ export default function Login() {
         console.log(currentUser);
         router.push("/Home");
       } catch (err: any) {
-        alert(err);
+        setError(err);
       }
     } finally {
       setLoading(false);
@@ -116,6 +132,8 @@ export default function Login() {
                 Sign Up
               </button>
             </div>
+
+            {error && <ErrorModal message={error} onClose={handleCloseError} />}
           </div>
           <div className="w-1/2">
             <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/authentication/illustration.svg" />

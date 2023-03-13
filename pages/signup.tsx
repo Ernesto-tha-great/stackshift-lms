@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
+import { ErrorModal } from "@/components/common/ErrorModal";
 import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
 import { whitelistedEmails } from "@/constants/pathways";
@@ -16,6 +17,7 @@ export default function SignUp() {
   const [country, setCountry] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -27,11 +29,25 @@ export default function SignUp() {
     setHasMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        handleCloseError();
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  const handleCloseError = () => {
+    setError("");
+  };
+
   const signup = async () => {
     setLoading(true);
     try {
       if (email === "" || name === "" || country === "" || password === "") {
-        alert("Please fill all the fields");
+        setError("Please fill all the fields");
         return;
       }
       if (whitelistedEmails.includes(email)) {
@@ -56,11 +72,11 @@ export default function SignUp() {
               address: address,
             },
           });
-        } catch (error) {
-          alert(error);
+        } catch (error: any) {
+          setError(error.toString());
         }
       } else {
-        alert("Your email is not whitelisted for this cohort!");
+        setError("Your email is not whitelisted for this cohort!");
       }
     } finally {
       setLoading(false);
@@ -158,6 +174,7 @@ export default function SignUp() {
                 Login
               </button>
             </div>
+            {error && <ErrorModal message={error} onClose={handleCloseError} />}
           </div>
           <div className="w-1/2">
             <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/authentication/illustration.svg" />

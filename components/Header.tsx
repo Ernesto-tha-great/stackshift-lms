@@ -8,30 +8,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
-export default function Header() {
+interface Props {
+  route: string;
+  currRoute: string;
+}
+
+export default function Header({ route, currRoute }: Props) {
   const [userAuth, setUserAuth] = useState(null);
   const router = useRouter();
-
-  useEffect(() => {
-    const userAuthenticated = () => {
-      Auth.currentAuthenticatedUser({
-        bypassCache: false, // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-      })
-        .then((user) => {
-          setUserAuth(user);
-        })
-        .catch((err) => console.log(err));
-    };
-    userAuthenticated();
-  }, []);
-
-  const handleRoute = () => {
-    if (userAuth !== null) {
-      router.push("/Home");
-    } else {
-      router.push("/signup");
-    }
-  };
 
   return (
     <Disclosure as="nav" className="bg-light">
@@ -51,10 +35,7 @@ export default function Header() {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <Link
-                  href={userAuth ? "/Home" : "/"}
-                  className="flex flex-shrink-0 items-center"
-                >
+                <Link href={route} className="flex flex-shrink-0 items-center">
                   <Image
                     className="block h-8 w-auto sm:block lg:block mr-8"
                     src="/logo.svg"
@@ -65,7 +46,7 @@ export default function Header() {
                 </Link>
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                   <Link
-                    href={userAuth ? "/pathways" : "/"}
+                    href={currRoute}
                     className="inline-flex items-center border-b-[3px] border-black px-1 pt-1 text-base font-noto text-bold text-black"
                   >
                     Curriculum

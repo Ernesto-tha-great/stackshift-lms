@@ -97,7 +97,7 @@ associated with a particular token ID.
 
 Let's break down the code and understand the different components of the contract:
 
-````solidity
+```solidity
     import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
     import "@openzeppelin/contracts/token/common/ERC2981.sol";
     import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -106,7 +106,7 @@ Let's break down the code and understand the different components of the contrac
     import "@openzeppelin/contracts/access/Ownable.sol";
     import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
     import "@openzeppelin/contracts/utils/Counters.sol";
-    ```
+```
 
 These are import statements for various OpenZeppelin libraries used in the contract. These libraries provide
 commonly used functionality for developing smart contracts and have been audited by the community.
@@ -114,27 +114,28 @@ commonly used functionality for developing smart contracts and have been audited
 ```solidity
 
     contract RetireCarbonCredits is ERC721, ERC721Enumerable, ERC721URIStorage, ERC2981, Pausable, Ownable, ERC721Burnable
-    ```
+```
 
 This is the declaration of the contract named `RetireCarbonCredits`. The contract inherits from several OpenZeppelin contracts, including ERC721 (for implementing the NFT standard), ERC721Enumerable (for enabling iteration over NFTs), ERC721URIStorage (for storing NFT metadata), ERC2981 (for royalty payments), Pausable (for emergency stop functionality), Ownable (for access control), and ERC721Burnable (for burning NFTs).
 
 ```solidity
     Counters.Counter private _tokenIdCounter;
-````
+```
 
 This is a counter variable that is used to assign unique token IDs to newly minted NFTs.
 
-````solidity
+```solidity
     uint96 public royaltypercentage;
     address public royaltyaddress;
-    ```
+```
 
 These are public variables that store the royalty percentage and the address of the account that should
- receive the royalty payment when the NFT is sold.
+receive the royalty payment when the NFT is sold.
 
 ```solidity
     string private url;
-    ```
+
+```
 
 This is a private variable that stores the base URI for the NFT metadata.
 
@@ -148,11 +149,10 @@ This is a private variable that stores the base URI for the NFT metadata.
         string uri;
         address creator;
     }
-    ```
+```
 
 This is a struct that defines the properties of a carbon credit project that the NFT represents. It includes
- the project name, token ID, methodology, region, emission type, URI, and the address of the creator.
-
+the project name, token ID, methodology, region, emission type, URI, and the address of the creator.
 
 ```solidity
     struct RetireData{
@@ -162,24 +162,24 @@ This is a struct that defines the properties of a carbon credit project that the
     uint256 timeStamp;
     uint256 amount;
     }
-````
+```
 
 A struct that contains information related to the retirement of the NFT, including the ID of the NFT being
 retired (`retireTokenId`), the address of the beneficiary (`beneceficiary`), a message to explain the
 retirement (`retireMessage`), the timestamp of the retirement (`timeStamp`), and the amount of the retirement
 (`amount`).
 
-````solidity
+```solidity
     mapping (uint256 => ProjectData) private _projectData;
     mapping (uint256 => RetireData) private _retireData;
-    ```
+```
 
 - `_projectData`: A private mapping that maps a token ID to a `ProjectData` struct. This is used to store information related to the project associated with the NFT.
 - `_retireData`: A private mapping that maps a token ID to a `RetireData` struct. This is used to store information related to the retirement of the NFT.
 
 ```solidity
   constructor() ERC721("Retire Carbon Credits", "RCC") { royaltypercentage = 150; royaltyaddress = 0xE3506A38C80D8bA1ef219ADF55E31E18FB88EbF4; \_setDefaultRoyalty(royaltyaddress ,royaltypercentage ); }
-````
+```
 
 The constructor function initializes the contract and sets the name and symbol of the token to "Retire Carbon Credits" and "RCC", respectively. It also sets the royalty percentage to 150 and the address of the royalty recipient to 0xE3506A38C80D8bA1ef219ADF55E31E18FB88EbF4. Lastly, it calls `_setDefaultRoyalty`, which is not shown in this code snippet, but likely sets up a royalty mechanism for the NFT.
 
