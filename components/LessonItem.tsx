@@ -21,7 +21,7 @@ function LessonItem({
 }: Props) {
   const isLocked =
     lessonNumber != "0" &&
-    Number(lessonNumber) > Number(lastCompletedLesson) + 1;
+    Number(lessonNumber) > Number(lastCompletedLesson) + 3;
   return (
     <div
       key={lesson.slug}
