@@ -106,6 +106,7 @@ export default function SignUp() {
                 value={email}
                 placeholder={"Email address"}
                 onChange={(e) => setEmail(e)}
+                type="email"
               />
             </div>
             <div className="mt-4">
@@ -113,6 +114,7 @@ export default function SignUp() {
                 value={name}
                 placeholder={"Full name"}
                 onChange={(e) => setName(e)}
+                type="text"
               />
             </div>
             <div className="mt-4">
@@ -120,11 +122,13 @@ export default function SignUp() {
                 value={country}
                 placeholder={"Country"}
                 onChange={(e) => setCountry(e)}
+                type="text"
               />
             </div>
             <div className="mt-4">
               <InputField
                 value={password}
+                type="password"
                 placeholder={"Password"}
                 onChange={(e) => setPassword(e)}
               />

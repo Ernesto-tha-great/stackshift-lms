@@ -3,14 +3,15 @@ type Props = {
   onChange: (e: string) => void;
   placeholder?: string;
   className?: string;
+  type: string;
 };
 
-function InputField({ value, onChange, placeholder, className }: Props) {
+function InputField({ value, onChange, placeholder, className, type }: Props) {
   return (
     <>
       <label className="font-noto">{placeholder}</label>
       <input
-        type="text"
+        type={type}
         className={
           className +
           " bg-white border border-gray-300 text-gray-900 text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-2.5 py-3 font-noto"

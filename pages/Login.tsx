@@ -2,11 +2,10 @@
 /* eslint-disable @next/next/no-img-element */
 import InputField from "@/components/common/input";
 import Loading from "@/components/common/Loading";
-import { DataStore } from "@aws-amplify/datastore";
 import { Auth } from "aws-amplify";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAccount } from "wagmi";
 
 export default function Login() {
@@ -80,6 +79,7 @@ export default function Login() {
                 value={username}
                 placeholder={"username (email)"}
                 onChange={(e) => setUsername(e)}
+                type="email"
               />
             </div>
 
@@ -88,6 +88,7 @@ export default function Login() {
                 value={password}
                 placeholder={"Password"}
                 onChange={(e) => setPassword(e)}
+                type="password"
               />
             </div>
             <div className="mt-8 h-16">
