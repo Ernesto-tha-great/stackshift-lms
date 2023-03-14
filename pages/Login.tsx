@@ -43,9 +43,6 @@ export default function Login() {
 
       try {
         await Auth.signIn(username, password);
-
-        const currentUser = await Auth.currentUserInfo();
-        console.log(currentUser);
         router.push("/Home");
       } catch (err: any) {
         setError(err);

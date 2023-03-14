@@ -151,7 +151,7 @@ export const whitelistedEmails = [
   "emot@gnsys.io",
   "jimmyimpulse2@gmail.com",
   "wuraola81@gmail.com",
-  "mosesjoshua350@gmail.com ",
+  "mosesjoshua350@gmail.com",
   "leomdevs@gmail.com",
   "m.aishat9890@gmail.com",
   "umercy001@gmail.com ",
