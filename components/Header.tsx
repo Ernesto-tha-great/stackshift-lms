@@ -2,19 +2,11 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { Auth } from "aws-amplify";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 
-interface Props {
-  route: string;
-  currRoute: string;
-}
-
-export default function Header({ route, currRoute }: Props) {
-  const [userAuth, setUserAuth] = useState(null);
+export default function Header() {
   const router = useRouter();
 
   return (
@@ -35,7 +27,14 @@ export default function Header({ route, currRoute }: Props) {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <Link href={route} className="flex flex-shrink-0 items-center">
+                <Link
+                  href={
+                    router.pathname === "/" || router.pathname === "/Login"
+                      ? "/"
+                      : "/Home"
+                  }
+                  className="flex flex-shrink-0 items-center"
+                >
                   <Image
                     className="block h-8 w-auto sm:block lg:block mr-8"
                     src="/logo.svg"
@@ -46,7 +45,11 @@ export default function Header({ route, currRoute }: Props) {
                 </Link>
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                   <Link
-                    href={currRoute}
+                    href={
+                      router.pathname === "/" || router.pathname === "/Login"
+                        ? "/"
+                        : "/pathways"
+                    }
                     className="inline-flex items-center border-b-[3px] border-black px-1 pt-1 text-base font-noto text-bold text-black"
                   >
                     Curriculum
