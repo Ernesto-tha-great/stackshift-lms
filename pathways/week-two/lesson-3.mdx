@@ -179,7 +179,8 @@ if statement that a hypothetical day is less than 0, the EVM should return the d
 
 #### The kickOff Function
 
-````solidity
+```solidity
+
      function kickOff(
       address _beneficiary,
       uint256 _target,
@@ -211,20 +212,22 @@ if statement that a hypothetical day is less than 0, the EVM should return the d
       );
       return campaignCount;
   }
+
 ```
 
 The kickOff function, as the name implies, is the function that will launch the contract. We incremented the
 campaignCount and set the members of the campaign struct. While most of the settings were done in the normal way
- and are straightforward, pay closer attention to how we set the ending member.
+and are straightforward, pay closer attention to how we set the ending member.
 
 We added the beginning to the result of the getEndDate function we defined earlier. After this, we put a check
- that the day the campaign will end must be less than or equal to 30 days.
+that the day the campaign will end must be less than or equal to 30 days.
 
 Moving on, we emitted some events into the log and return the campaignCount.
 
 #### The Give Function
 
 ```solidity
+
     function give(uint256 _benefactorsId, uint256 _amount) external {
         require(
             campaigns[_benefactorsId].moneyRaised <=
@@ -244,13 +247,14 @@ Moving on, we emitted some events into the log and return the campaignCount.
         campaign.benefactorsInfo.push(Benefactors(msg.sender, _amount));
         emit Give(_benefactorsId, msg.sender, _amount);
     }
+
 ```
 
 This is the function that the benefactors will use to donate money towards the success of a campaign. We put in
 two checks before a benefactor can donate.
 
 First, it must be the case that the total funds that have been raised so far have not reached the desired goal.
- Otherwise, there will be no need for donations any longer.
+Otherwise, there will be no need for donations any longer.
 
 Second, a benefactor can only donate when the contract has not ended.
 
@@ -263,6 +267,7 @@ amount they donated.
 #### The unGive Function
 
 ```solidity
+
     function undoGiving(uint256 _benefactorsId, uint256 _amount) external {
         require(
             block.timestamp <= campaigns[_benefactorsId].ending,
@@ -293,10 +298,11 @@ amount they donated.
 
         emit UnGive(_benefactorsId, msg.sender, _amount);
     }
+
 ```
 
 Well, the reality is that sometimes, the donors might change their minds and conclude to take their donation back.
- Thus, there should be a function for this to allow fairness.
+Thus, there should be a function for this to allow fairness.
 
 The first requirement we put in was that no donor can get a refund once the campaign has ended. Secondly, the
 said benefactor must have actually donated earlier.
@@ -306,14 +312,15 @@ Then we deducted the amount from the pool and sent the money back to the donor.
 Now, we need to go a step further to remove such a donor from the benefactor's array.
 
 Thus, we will need to carry out a for loop, and for composability, we stored what should have been campaign.benefactorsInfo.length
- variable. Afterward, we created a logic that such an earlier investor should be the last person in the
- benefactors' array.
+variable. Afterward, we created a logic that such an earlier investor should be the last person in the
+benefactors' array.
 
 Then we called a .pop, a method that removes the last person in an array.
 
 #### The Withdrawal Function
 
 ```solidity
+
     function withdrawal(uint256 _Id) external {
       require(
           campaigns[_Id].beneficiary == msg.sender,
@@ -366,56 +373,57 @@ Then we made a transfer call where we sent the money raised to the beneficiary.
         emit Refund(_benefactorsId, msg.sender, bal);
     }
 ```
+
 What happens to all the money that has been raised if the campaign turns out to be unsuccessful? The purpose of
 this function is that the donors can call it to get their funds back if it were to be the case that they did not
- meet the target at the end of the day.
+meet the target at the end of the day.
 
- #### The Detail Getter Functions
+#### The Detail Getter Functions
 
- ```solidity
-      function checkSuccess(uint256 _campaignCount)
-        external
-        view
-        returns (bool success)
-    {
-        if (
-            campaigns[_campaignCount].moneyRaised >=
-            campaigns[_campaignCount].target
-            // should be greater than or equal to
-        ) {
-            success = true;
-        }
-    }
+```solidity
+     function checkSuccess(uint256 _campaignCount)
+       external
+       view
+       returns (bool success)
+   {
+       if (
+           campaigns[_campaignCount].moneyRaised >=
+           campaigns[_campaignCount].target
+           // should be greater than or equal to
+       ) {
+           success = true;
+       }
+   }
 
-    function getContributorAmount(uint256 _benefactorsInfo)
-        external
-        view
-        returns (uint256)
-    {
-        // the Data of everyone who contributed to the project is stored in the trackRaisedMoney mapping
-        return trackRaisedMoney[_benefactorsInfo][msg.sender];
-    }
+   function getContributorAmount(uint256 _benefactorsInfo)
+       external
+       view
+       returns (uint256)
+   {
+       // the Data of everyone who contributed to the project is stored in the trackRaisedMoney mapping
+       return trackRaisedMoney[_benefactorsInfo][msg.sender];
+   }
 
-    // this function fetches us the data of everyone who contributed to the campaign
-    // first their number and the addresses of each of them
-    function getBenefactors(uint256 _benefactorsInfo)
-        external
-        view
-        returns (Benefactors[] memory)
-    {
-        // the Data of everyone who contributed to the project is stored in the trackRaisedMoney mapping
-        // generally unhealthy to use an array
+   // this function fetches us the data of everyone who contributed to the campaign
+   // first their number and the addresses of each of them
+   function getBenefactors(uint256 _benefactorsInfo)
+       external
+       view
+       returns (Benefactors[] memory)
+   {
+       // the Data of everyone who contributed to the project is stored in the trackRaisedMoney mapping
+       // generally unhealthy to use an array
 
-        Campaign memory campaign = campaigns[_benefactorsInfo];
-        // return campaigns[_benefactorsInfo].length;
+       Campaign memory campaign = campaigns[_benefactorsInfo];
+       // return campaigns[_benefactorsInfo].length;
 
-        return campaign.benefactorsInfo; // originally not initialized
+       return campaign.benefactorsInfo; // originally not initialized
 
-        // abeg help me fix this --Done my chief!
-    }
- ```
+       // abeg help me fix this --Done my chief!
+   }
+```
 
- The rest of the functions in this contract are getter functions for some important details:
+The rest of the functions in this contract are getter functions for some important details:
 
 - The checkSuccess function checks if any particular campaign was successful functions
 - The getContributorAmount function returns the amount that each donor gave
@@ -647,6 +655,7 @@ contract RaiseMoney {
 ```
 
 ### Creating the ERC-20 Contract
+
 Since we imported an IERC20 interface, we will need to create an ERC-20 contract alongside our crowdfunding
 contract. Create a file and name it testERC.sol.
 
@@ -673,33 +682,37 @@ contract FooCoin is ERC20 {
 ```
 
 We inherited an ERC-20 interface from Open Zeppelin, and the main function we included was one that allowed us to
- mint tokens. Compile this contract
+mint tokens. Compile this contract
 
 ### Compilation
+
 Save all your contracts. Now, go to your raisemoney.sol contract and compile on the terminal with
+
 ```bash
 npx hardhat compile
 ```
- Other things being equal, your contract should compile.
+
+Other things being equal, your contract should compile.
 
 ### Testing of the Contract
+
 We have to test the functions in our contract to ensure everything runs well. On this note, create a file and
 name it test.js. Paste this test script:
 
-```solidity
-    const {
-  loadFixture, time
+```javascript
+const {
+  loadFixture,
+  time,
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect, assert } = require("chai");
-const { ethers } = require("hardhat")
+const { ethers } = require("hardhat");
 
 describe("Deploy Raisemoney", function () {
   // We define a fixture to reuse the same setup in every test. or use a beforeEach function
   // We use loadFixture to run this setup once, snapshot that state,
   // and reset Hardhat Network to that snapshot in every test.
   async function deployRaiseMoney() {
-
     // const ONE_ETH = 1_000_000_000_000_000_000_000;
 
     const getThousand = ethers.utils.parseUnits("1000", "ether");
@@ -707,7 +720,6 @@ describe("Deploy Raisemoney", function () {
     const getTwoHundred = ethers.utils.parseUnits("200", "ether");
     const getHundred = ethers.utils.parseUnits("100", "ether");
     const getFifty = ethers.utils.parseUnits("50", "ether");
-
 
     // Contracts are deployed using the first signer/account by default
     const [owner, user1, user2, user3] = await ethers.getSigners();
@@ -718,14 +730,36 @@ describe("Deploy Raisemoney", function () {
     const testERC = await test_ERC.deploy(getThousand);
     const raiseMoney = await raise_Money.deploy(testERC.address);
 
-
-    return { testERC, raiseMoney, owner, user1, user2, user3, getThousand, getFiveHundred, getTwoHundred, getHundred, getFifty };
+    return {
+      testERC,
+      raiseMoney,
+      owner,
+      user1,
+      user2,
+      user3,
+      getThousand,
+      getFiveHundred,
+      getTwoHundred,
+      getHundred,
+      getFifty,
+    };
   }
 
   describe("Deployment", function () {
-
     async function loadTokenfeatures() {
-      const { testERC, raiseMoney, owner, user1, user2, user3, getThousand, getFiveHundred, getTwoHundred, getHundred, getFifty } = await loadFixture(deployRaiseMoney);
+      const {
+        testERC,
+        raiseMoney,
+        owner,
+        user1,
+        user2,
+        user3,
+        getThousand,
+        getFiveHundred,
+        getTwoHundred,
+        getHundred,
+        getFifty,
+      } = await loadFixture(deployRaiseMoney);
       let tx1 = await testERC.connect(user1).mintMore(getFiveHundred);
       let tx2 = await testERC.connect(user2).mintMore(getFiveHundred);
       let tx3 = await testERC.connect(user3).mintMore(getFiveHundred);
@@ -735,20 +769,41 @@ describe("Deploy Raisemoney", function () {
       let user2Bal = await testERC.balanceOf(user2.address);
       let user3Bal = await testERC.balanceOf(user3.address);
 
-      return { ownerBalance, user1Bal, user2Bal, user3Bal, testERC, raiseMoney, owner, user1, user2, user3, getThousand, getFiveHundred, getTwoHundred, getHundred, getFifty };
+      return {
+        ownerBalance,
+        user1Bal,
+        user2Bal,
+        user3Bal,
+        testERC,
+        raiseMoney,
+        owner,
+        user1,
+        user2,
+        user3,
+        getThousand,
+        getFiveHundred,
+        getTwoHundred,
+        getHundred,
+        getFifty,
+      };
     }
-
 
     it("Should mint more coins for other users", async function () {
       // To load state from fixtures
-      const { ownerBalance, user1Bal, user2Bal, user3Bal, user4Bal, getThousand, getFiveHundred } = await loadFixture(loadTokenfeatures);
-
+      const {
+        ownerBalance,
+        user1Bal,
+        user2Bal,
+        user3Bal,
+        user4Bal,
+        getThousand,
+        getFiveHundred,
+      } = await loadFixture(loadTokenfeatures);
 
       expect(ownerBalance).to.equal(getThousand);
       expect(user1Bal).to.equal(getFiveHundred);
       expect(user2Bal).to.equal(getFiveHundred);
       expect(user3Bal).to.equal(getFiveHundred);
-
     });
 
     it("Should set the right token address", async function () {
@@ -759,54 +814,75 @@ describe("Deploy Raisemoney", function () {
     });
 
     it("should be able to kickoff properly", async function () {
-      const { owner, user1, user2, raiseMoney, getTwoHundred } = await loadFixture(deployRaiseMoney);
+      const { owner, user1, user2, raiseMoney, getTwoHundred } =
+        await loadFixture(deployRaiseMoney);
 
-      let tx1 = await raiseMoney.connect(owner).kickOff(user1.address, getTwoHundred, 29);
+      let tx1 = await raiseMoney
+        .connect(owner)
+        .kickOff(user1.address, getTwoHundred, 29);
       let campaignCount = await raiseMoney.campaignCount();
       expect(campaignCount).to.equal(1);
 
       // To test an error due to the condition "Campaign must end in 30 days"
-      await expect(raiseMoney.connect(user2).kickOff(user2.address, getTwoHundred, 31)).to.be.reverted;
+      await expect(
+        raiseMoney.connect(user2).kickOff(user2.address, getTwoHundred, 31)
+      ).to.be.reverted;
     });
     // console.log("Kickoff works as expected!");
 
     it("Should be able to give properly", async function () {
-      const { owner, user1, user2, user3, raiseMoney, testERC, getFiveHundred, getTwoHundred, getFifty } = await loadFixture(
-        loadTokenfeatures
-      );
+      const {
+        owner,
+        user1,
+        user2,
+        user3,
+        raiseMoney,
+        testERC,
+        getFiveHundred,
+        getTwoHundred,
+        getFifty,
+      } = await loadFixture(loadTokenfeatures);
       await raiseMoney.connect(owner).kickOff(user1.address, getTwoHundred, 29);
       // To approve the contract
-      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user3).approve(raiseMoney.address, getFiveHundred)
+      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user3).approve(raiseMoney.address, getFiveHundred);
 
       await raiseMoney.connect(user1).give(1, getFifty);
       await raiseMoney.connect(user2).give(1, getTwoHundred);
 
       let [beneficiary, moneyraised] = await raiseMoney.campaigns(1);
 
-      expect(moneyraised).to.be.greaterThanOrEqual(
-        getTwoHundred
-      );
+      expect(moneyraised).to.be.greaterThanOrEqual(getTwoHundred);
 
       // To track the raised money of an address
-      let user2contributions = await raiseMoney.connect(user2).trackRaisedMoney(1, user2.address)
+      let user2contributions = await raiseMoney
+        .connect(user2)
+        .trackRaisedMoney(1, user2.address);
       expect(user2contributions).to.equal(getTwoHundred);
 
       // To test that a user can't give after target is reached
-      await expect(raiseMoney.connect(user2).give(1, getTwoHundred)).to.be.reverted;
+      await expect(raiseMoney.connect(user2).give(1, getTwoHundred)).to.be
+        .reverted;
 
       // console.log(await raiseMoney.getBenefactors(1));
     });
 
     it("Should Undo giving", async function () {
-      const { owner, user1, user2, raiseMoney, testERC, getFiveHundred, getTwoHundred, getFifty } = await loadFixture(
-        loadTokenfeatures
-      );
+      const {
+        owner,
+        user1,
+        user2,
+        raiseMoney,
+        testERC,
+        getFiveHundred,
+        getTwoHundred,
+        getFifty,
+      } = await loadFixture(loadTokenfeatures);
       await raiseMoney.connect(owner).kickOff(user1.address, getTwoHundred, 20);
       // To approve the contract
-      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred)
+      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred);
 
       // to give
       await raiseMoney.connect(user1).give(1, getFifty);
@@ -815,21 +891,32 @@ describe("Deploy Raisemoney", function () {
       // to ungive
       await raiseMoney.connect(user1).undoGiving(1, getFifty);
 
-      let user1contributions = await raiseMoney.trackRaisedMoney(1, user1.address);
+      let user1contributions = await raiseMoney.trackRaisedMoney(
+        1,
+        user1.address
+      );
       expect(user1contributions).to.equal(0);
 
       // It shoud fail when a user attempts to ungive beyond his balance
-      await expect(raiseMoney.connect(user1).undoGiving(1, getFiveHundred)).to.be.reverted;
+      await expect(raiseMoney.connect(user1).undoGiving(1, getFiveHundred)).to
+        .be.reverted;
     });
 
     it("Should Check Success after campaign target is reached", async function () {
-      const { owner, user1, user2, raiseMoney, testERC, getFiveHundred, getTwoHundred, getFifty } = await loadFixture(
-        loadTokenfeatures
-      );
+      const {
+        owner,
+        user1,
+        user2,
+        raiseMoney,
+        testERC,
+        getFiveHundred,
+        getTwoHundred,
+        getFifty,
+      } = await loadFixture(loadTokenfeatures);
       await raiseMoney.connect(owner).kickOff(user1.address, getTwoHundred, 20);
       // To approve the contract
-      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred)
+      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred);
 
       // to give
       await raiseMoney.connect(user1).give(1, getFifty);
@@ -840,10 +927,21 @@ describe("Deploy Raisemoney", function () {
   });
 
   describe("Withdrawals", function () {
-
     // Using fixures again
     async function loadTokenfeatures() {
-      const { testERC, raiseMoney, owner, user1, user2, user3, getThousand, getFiveHundred, getTwoHundred, getHundred, getFifty } = await loadFixture(deployRaiseMoney);
+      const {
+        testERC,
+        raiseMoney,
+        owner,
+        user1,
+        user2,
+        user3,
+        getThousand,
+        getFiveHundred,
+        getTwoHundred,
+        getHundred,
+        getFifty,
+      } = await loadFixture(deployRaiseMoney);
       let tx1 = await testERC.connect(user1).mintMore(getFiveHundred);
       let tx2 = await testERC.connect(user2).mintMore(getFiveHundred);
       let tx3 = await testERC.connect(user3).mintMore(getFiveHundred);
@@ -853,17 +951,40 @@ describe("Deploy Raisemoney", function () {
       let user2Bal = await testERC.balanceOf(user2.address);
       let user3Bal = await testERC.balanceOf(user3.address);
 
-      return { ownerBalance, user1Bal, user2Bal, user3Bal, testERC, raiseMoney, owner, user1, user2, user3, getThousand, getFiveHundred, getTwoHundred, getHundred, getFifty };
+      return {
+        ownerBalance,
+        user1Bal,
+        user2Bal,
+        user3Bal,
+        testERC,
+        raiseMoney,
+        owner,
+        user1,
+        user2,
+        user3,
+        getThousand,
+        getFiveHundred,
+        getTwoHundred,
+        getHundred,
+        getFifty,
+      };
     }
 
     it("Should revert with the right error if called too soon", async function () {
-      const { owner, user1, user2, raiseMoney, testERC, getFiveHundred, getTwoHundred, getFifty } = await loadFixture(
-        loadTokenfeatures
-      );
+      const {
+        owner,
+        user1,
+        user2,
+        raiseMoney,
+        testERC,
+        getFiveHundred,
+        getTwoHundred,
+        getFifty,
+      } = await loadFixture(loadTokenfeatures);
       await raiseMoney.connect(owner).kickOff(user1.address, getTwoHundred, 20);
       // To approve the contract
-      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred)
+      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred);
 
       // to give
       await raiseMoney.connect(user1).give(1, getFifty);
@@ -872,17 +993,23 @@ describe("Deploy Raisemoney", function () {
       await expect(raiseMoney.connect(user1).withdrawal(1)).to.be.revertedWith(
         "cannot withdraw before ending"
       );
-
     });
 
     it("Should revert with the right error if called from another account", async function () {
-      const { owner, user1, user2, raiseMoney, testERC, getFiveHundred, getTwoHundred, getFifty } = await loadFixture(
-        loadTokenfeatures
-      );
+      const {
+        owner,
+        user1,
+        user2,
+        raiseMoney,
+        testERC,
+        getFiveHundred,
+        getTwoHundred,
+        getFifty,
+      } = await loadFixture(loadTokenfeatures);
       await raiseMoney.connect(owner).kickOff(user1.address, getTwoHundred, 20);
       // To approve the contract
-      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred)
+      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred);
 
       // to give
       await raiseMoney.connect(user1).give(1, getFifty);
@@ -894,13 +1021,20 @@ describe("Deploy Raisemoney", function () {
     });
 
     it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-      const { owner, user1, user2, raiseMoney, testERC, getFiveHundred, getTwoHundred, getFifty } = await loadFixture(
-        loadTokenfeatures
-      );
+      const {
+        owner,
+        user1,
+        user2,
+        raiseMoney,
+        testERC,
+        getFiveHundred,
+        getTwoHundred,
+        getFifty,
+      } = await loadFixture(loadTokenfeatures);
       await raiseMoney.connect(owner).kickOff(user1.address, getTwoHundred, 20);
       // To approve the contract
-      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred)
+      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred);
 
       // to give
       await raiseMoney.connect(user1).give(1, getFifty);
@@ -916,13 +1050,22 @@ describe("Deploy Raisemoney", function () {
     });
 
     it("Refund Benefactors tokens if target isn't met", async function () {
-      const { owner, user1, user2, raiseMoney, testERC, getFiveHundred, getTwoHundred, getFifty } = await loadFixture(
-        loadTokenfeatures
-      );
-      await raiseMoney.connect(owner).kickOff(user1.address, getFiveHundred, 20);
+      const {
+        owner,
+        user1,
+        user2,
+        raiseMoney,
+        testERC,
+        getFiveHundred,
+        getTwoHundred,
+        getFifty,
+      } = await loadFixture(loadTokenfeatures);
+      await raiseMoney
+        .connect(owner)
+        .kickOff(user1.address, getFiveHundred, 20);
       // To approve the contract
-      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred)
-      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred)
+      await testERC.connect(user1).approve(raiseMoney.address, getFiveHundred);
+      await testERC.connect(user2).approve(raiseMoney.address, getFiveHundred);
 
       // to give
       await raiseMoney.connect(user1).give(1, getFifty);
@@ -936,10 +1079,10 @@ describe("Deploy Raisemoney", function () {
 
       await expect(raiseMoney.connect(user1).refund(1)).not.to.be.reverted;
     });
-
   });
 });
 ```
+
 Once you have compiled it, this should show on your terminal:
 
 ![](https://docs.celo.org/assets/images/test%20celo-bf4d30e2d5304a61afad51f6b58dda02.jpeg)
@@ -947,11 +1090,12 @@ Once you have compiled it, this should show on your terminal:
 Now, we can move to the next phase, which is deployment to the Celo Alfajores Testnet.
 
 ### Deployment of the Crowdfunding Contract to Celo
+
 Before you plan to deploy, ensure you delete the configuration file–which is the Hardhat.config.js in your
- Hardhat and replace it with this:
+Hardhat and replace it with this:
 
 ```javascript
-    require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-waffle");
 require("dotenv").config({ path: ".env" });
 require("hardhat-deploy");
 
@@ -997,16 +1141,16 @@ module.exports = {
 ```
 
 Then deploy the contract with hardhat run scripts/deploy.js --network alfajores. This was the contract address
- of our contract:` 0xEF87eDE6F4713De16d83Ca08cf0f8A6a263Db60A`.
+of our contract:` 0xEF87eDE6F4713De16d83Ca08cf0f8A6a263Db60A`.
 
- ![](https://docs.celo.org/assets/images/celo%20result-06517114de2e070e867824e70d0d47e5.jpeg)
+![](https://docs.celo.org/assets/images/celo%20result-06517114de2e070e867824e70d0d47e5.jpeg)
 
- You can always verify your contracts at [Celoscan](https://alfajores.celoscan.io/)
+You can always verify your contracts at [Celoscan](https://alfajores.celoscan.io/)
 
- ### Conclusion
+### Conclusion
+
 Congratulations, you just learned how to build and deploy a crowdfunding contract on the Celo blockchain. This
- project should have enhanced your contract of not only smart contract development with Solidity but also the
- intricacies of successfully building on Celo.
+project should have enhanced your contract of not only smart contract development with Solidity but also the
+intricacies of successfully building on Celo.
 
 Ensure you take your time to code along in this tutorial, and push your code to GitHub when you are done.
-````
