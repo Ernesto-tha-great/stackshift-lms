@@ -42,11 +42,7 @@ this workflow. This means compiling, running, and testing smart contracts at the
 
 ![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*6bO0ib5Z5Ya1xx6vpz_2Iw.png)
 
-:::tip
-
-Learn more: If you are new to Hardhat check out [Hardhat.org](https://hardhat.org/).
-
-:::
+- Learn more: If you are new to Hardhat check out [Hardhat.org](https://hardhat.org/).
 
 ### ✅ Step 1: Environment setup​
 
@@ -75,11 +71,7 @@ npm install -g @celo/celocli
 
 ![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*z9eiaxJZdbjwV-IX5bDguA.png)
 
-:::tip
-
-The [@celo/ganache-cli](https://github.com/celo-org/ganache-cli) is Celo’s version of Ganache. It doesn’t seem to be working for me but you can try installing it in your environment.
-
-:::
+- The [@celo/ganache-cli](https://github.com/celo-org/ganache-cli) is Celo’s version of Ganache. It doesn’t seem to be working for me but you can try installing it in your environment.
 
 From the Ganache UI, create a new workspace on `localhost:7545`.
 
@@ -93,8 +85,6 @@ Now that you have your environment setup, you’re ready to create your project!
 mkdir celo-hardhat && cd celo-hardhat
 ```
 
-![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*blWtAuJvQMTSHdXk97Xj3w.png)
-
 ### Initialize an npm project
 
 Initialize an npm project from within the project directory.
@@ -103,8 +93,6 @@ Initialize an npm project from within the project directory.
 npm init -y
 ```
 
-![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*ejQNFqLZ_jqOk9_OrOxrnA.png)
-
 ### Install dotenv
 
 [Dotenv](https://www.npmjs.com/package/dotenv) is a module that loads environment variables from a `.env` file. Install this now and you’ll use this to import information to your Truffle configuration file.
@@ -112,8 +100,6 @@ npm init -y
 ```bash
 npm install dotenv
 ```
-
-![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*p7BXgaKISEXGg8GJyERzYw.png)
 
 ### Initialize hardhat
 
@@ -131,11 +117,7 @@ npx hardhat
 
 ![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*8ylm4OJmsTp77yEJWfr7CQ.png)
 
-:::tip
-
-Learn more: Follow the [installation instructions and quickstart](https://hardhat.org/getting-started/#installation) for additional details.
-
-:::
+- Learn more: Follow the [installation instructions and quickstart](https://hardhat.org/getting-started/#installation) for additional details.
 
 ### Customize project settings
 
@@ -177,11 +159,7 @@ contract HelloCelo {
 
 ![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*7xKUeShYe2DUqkjPEeHxkw.png)
 
-:::tip
-
-Learn more: Read the [Solidity docs](https://docs.soliditylang.org/en/v0.8.9/) or [Solidity by Example](https://solidity-by-example.org/) to learn more about the programming language for building smart contracts.
-
-:::
+- Learn more: Read the [Solidity docs](https://docs.soliditylang.org/en/v0.8.9/) or [Solidity by Example](https://solidity-by-example.org/) to learn more about the programming language for building smart contracts.
 
 ### Script files
 
@@ -206,11 +184,7 @@ console.log("HelloCelo deployed to:", helloCelo.address);
 
 ![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*hAp9rOC1m4diXpAwACu87g.png)
 
-:::tip
-
-If you created a different smart contract, update the const names, file requirement and deployment to match your new contract.
-
-:::
+- If you created a different smart contract, update the const names, file requirement and deployment to match your new contract.
 
 ### Deploy HelloCelo.sol
 
@@ -263,11 +237,7 @@ PRIVATE_KEY =
 
 ![image](https://miro.medium.com/v2/resize:fit:4800/format:webp/1*Q_hNMp3YtIKwRn91Wcb2Wg.png)
 
-:::tip
-
-See [ignoring files](https://help.github.com/articles/ignoring-files/) for more information.
-
-:::
+- See [ignoring files](https://help.github.com/articles/ignoring-files/) for more information.
 
 ### ✅ Step 5: Configure deployment settings
 
@@ -287,11 +257,7 @@ localhost: {
     },
 ```
 
-:::tip
-
-If you choose to [Set up a Local Development Chain](https://docs.celo.org/developer-guide/development-chain), your blockchain will also be hosted on a private network on localhost. This same configuration can be used to connect to the local development chain.
-
-:::
+- If you choose to [Set up a Local Development Chain](https://docs.celo.org/developer-guide/development-chain), your blockchain will also be hosted on a private network on localhost. This same configuration can be used to connect to the local development chain.
 
 ### Alfajores test network
 
