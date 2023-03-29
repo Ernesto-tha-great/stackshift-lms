@@ -7,7 +7,6 @@ import Head from "next/head";
 import Img, { StaticImageData } from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 
 interface Props {
   pathway: {
@@ -36,37 +35,8 @@ interface Props {
 
 function Pathway({ allLessons, pathway }: Props) {
   const router = useRouter();
-  const { address } = useAccount();
   const slug = router.query.slug as string;
   const [pathwayFBData, setPathwayFBData] = useState<any>(null);
-  const [completedPercentage, setCompletedPercentage] = useState(0);
-
-  // useEffect(() => {
-  //   const pathwayApiCall = async () => {
-  //     var res = await fetch("/api/pathway", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         address: address,
-  //         pathway: slug,
-  //       }),
-  //     });
-  //     res = await res.json();
-  //     getCompletedLessonPercentage(res);
-  //     setPathwayFBData(res);
-  //     console.log(res);
-  //   };
-  //   pathwayApiCall();
-  // }, [address, slug]);
-
-  // const getCompletedLessonPercentage = (data: any) => {
-  //   const totalLessons = allLessons.length;
-  //   const lastCompletedLesson = Number(data.lastCompletedLesson) + 1;
-  //   const percentage = (lastCompletedLesson / totalLessons) * 100;
-  //   setCompletedPercentage(Math.round(percentage));
-  // };
 
   return (
     <>
