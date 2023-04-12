@@ -167,4 +167,5 @@ export const whitelistedEmails = [
   "adesanyajoshua@ymail.com",
   "qqudusayo@gmail.com",
   "thenfh2022@gmail.com",
+  "adebayoabimbola9@gmail.com",
 ];
