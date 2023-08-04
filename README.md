@@ -1,6 +1,22 @@
-# React Framework + NextJS | Celo Composer
+# LMS STUDIO
 
-Celo Composer support React boilerplate template with TailwindCSS. This is a starter kit with no additional boilerplate code. It's a perfect starter kit to get your project started on Celo blockchain.
+## Overview
+The Learning Management System (LMS) is a powerful platform designed to facilitate educative programs by providing a seamless experience for both instructors and learners. This system allows course creators to add various types of content, including video and text-based materials, making it an ideal solution for delivering comprehensive educational .
+
+## Features
+- Course Creation: Instructors can easily create new courses and organize them into categories, ensuring a structured learning environment.
+
+- Content Variety: The LMS supports various content types, including video lectures and text-based materials, offering a diverse range of teaching methods.
+
+- User Registration and Authentication: Learners can create accounts and log in securely to access their enrolled courses and track their progress.
+
+- Enrollment and Progress Tracking: Learners can enroll in courses of interest, and the system tracks their progress, providing insights into completed modules and overall course advancement.
+
+- Interactive Assessments: Instructors can design quizzes and assignments to assess learners' knowledge, promoting active engagement and learning.
+
+- Discussion Forums: Each course has its own discussion forum, fostering a collaborative learning environment and enabling learners to interact with peers and instructors.
+
+- Responsive Design: The LMS is built with a responsive design, ensuring a consistent and user-friendly experience across various devices and screen sizes.
 
 ## Setup & Intallation
 
@@ -10,8 +26,6 @@ yarn
 
 Run `yarn` or `npm install` to install all the required dependencies to run the dApp.
 
-> React + Tailwind CSS Template does not have any dependency on hardhat and truffle.
-> This starterkit does not include connection of Hardhat/Truffle with ReactJS. It's up to the user to integrate smart contract with ReactJS. This gives user more flexibily over the dApp.
 
 - To start the dApp, run the following command.
 
@@ -25,10 +39,6 @@ yarn react-dev
 - [Next.js](https://nextjs.org/) app framework
 - [TailwindCSS](https://tailwindcss.com/) for UI
 
-### Optional
-> On CLI setup you'll be able to select your favorive front-end web3 library to interact with the Celo blockchain:
-- [react-celo](https://www.npmjs.com/package/@celo/react-celo), a React hook library for managing access to Celo with a built-in headless modal system for connecting to your users wallet of choice.
-- [rainbowkit-celo](https://www.npmjs.com/package/@celo/rainbowkit-celo), a plugin to help rainbowkit developers support the CELO protocol faster.
 
 ## Architecture
 
