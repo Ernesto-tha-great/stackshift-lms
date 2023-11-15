@@ -23,8 +23,6 @@ export default function SignUp() {
 
   const { address, isDisconnected } = useAccount();
 
-  // const { user, setUser } = useUser();
-
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -50,33 +48,30 @@ export default function SignUp() {
         setError("Please fill all the fields");
         return;
       }
-      if (whitelistedEmails.includes(email)) {
-        try {
-          const { user } = await Auth.signUp({
-            username: email,
-            password: password,
-            attributes: {
-              email: email,
-            },
-            autoSignIn: {
-              enabled: true,
-            },
-          });
-          console.log(user);
-          router.push({
-            pathname: "/Verification",
-            query: {
-              email: email,
-              name: name,
-              country: country,
-              address: address,
-            },
-          });
-        } catch (error: any) {
-          setError(error.toString());
-        }
-      } else {
-        setError("Your email is not whitelisted for this cohort!");
+
+      try {
+        const { user } = await Auth.signUp({
+          username: email,
+          password: password,
+          attributes: {
+            email: email,
+          },
+          autoSignIn: {
+            enabled: true,
+          },
+        });
+        console.log(user);
+        router.push({
+          pathname: "/Verification",
+          query: {
+            email: email,
+            name: name,
+            country: country,
+            address: address,
+          },
+        });
+      } catch (error: any) {
+        setError(error.toString());
       }
     } finally {
       setLoading(false);

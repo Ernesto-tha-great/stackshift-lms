@@ -28,13 +28,11 @@ export default function Verification() {
       }
 
       try {
-        console.log("newhhh", router.query.email?.toString());
-        console.log("newhhh", verificationCode);
         await Auth.confirmSignUp(
           router.query.email!.toString(),
           verificationCode
         );
-        console.log("newhhh", "success");
+
         await DataStore.save(
           new User({
             email: router.query.email?.toString(),
@@ -43,7 +41,7 @@ export default function Verification() {
             address: router.query.address?.toString(),
           })
         );
-        console.log("newhhh", "success2");
+
         router.push({
           pathname: "/Login",
           query: {
