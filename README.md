@@ -1,49 +1,36 @@
-# LMS STUDIO
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Overview
-The Learning Management System (LMS) is a powerful platform designed to facilitate educative programs by providing a seamless experience for both instructors and learners. This system allows course creators to add various types of content, including video and text-based materials, making it an ideal solution for delivering comprehensive educational .
+## Getting Started
 
-## Features
-- Course Creation: Instructors can easily create new courses and organize them into categories, ensuring a structured learning environment.
-
-- Content Variety: The LMS supports various content types, including video lectures and text-based materials, offering a diverse range of teaching methods.
-
-- User Registration and Authentication: Learners can create accounts and log in securely to access their enrolled courses and track their progress.
-
-- Enrollment and Progress Tracking: Learners can enroll in courses of interest, and the system tracks their progress, providing insights into completed modules and overall course advancement.
-
-- Interactive Assessments: Instructors can design quizzes and assignments to assess learners' knowledge, promoting active engagement and learning.
-
-- Discussion Forums: Each course has its own discussion forum, fostering a collaborative learning environment and enabling learners to interact with peers and instructors.
-
-- Responsive Design: The LMS is built with a responsive design, ensuring a consistent and user-friendly experience across various devices and screen sizes.
-
-## Setup & Intallation
+First, run the development server:
 
 ```bash
-yarn
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Run `yarn` or `npm install` to install all the required dependencies to run the dApp.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- To start the dApp, run the following command.
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-```bash
-yarn react-dev
-```
+## Learn More
 
-## Dependencies
+To learn more about Next.js, take a look at the following resources:
 
-### Default
-- [Next.js](https://nextjs.org/) app framework
-- [TailwindCSS](https://tailwindcss.com/) for UI
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Architecture
+## Deploy on Vercel
 
-- `/pages` includes the main application components (specifically `index.tsx` and `_app.tsx`)
-  - `_app.tsx` includes configuration
-  - `index.tsx` is the main page of the application
-- `/components` includes components that are rendered in `index.tsx`
-- `/public` includes static files
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
